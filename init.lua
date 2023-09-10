@@ -145,6 +145,12 @@ require("lazy").setup({
                 function (server_name)
                     require("lspconfig")[server_name].setup({ on_attach = on_attach })
                 end,
+                ["tailwindcss"] = function()
+                    require("lspconfig")["tailwindcss"].setup({
+                        on_attach = on_attach,
+                        filetypes = { "html", "vue", "svelte", "css", "scss", "javascriptreact", "typescriptreact" },
+                    })
+                end,
                 ["volar"] = function()
                     require("lspconfig")["volar"].setup({
                         on_attach = function(client, bufnr)
