@@ -34,7 +34,7 @@ set splitright
 set splitbelow
 set scrolloff=3
 set list
-set showtabline=2
+set showtabline=0
 set belloff=all
 set termguicolors
 set backspace=start,eol,indent
