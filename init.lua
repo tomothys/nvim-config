@@ -3,6 +3,8 @@ vim.cmd [[
     source $HOME/.config/nvim/abbrevs.vim
     source $HOME/.config/nvim/commands.vim
     source $HOME/.config/nvim/keymaps.vim
+    source $HOME/.config/nvim/statusbar.vim
+    source $HOME/.config/nvim/windowbar.vim
 ]]
 
 -- Initilize own plugins
@@ -40,6 +42,9 @@ require("lazy").setup({
                 highlight LineNr guibg=NONE guifg=#7aa2f7
                 highlight LineNrAbove guibg=NONE guifg=#db4b4b
                 highlight LineNrBelow guibg=NONE guifg=#9ece6a
+                highlight StatusLine gui=bold guifg=#ffffff guibg=#db4b4b " guifg=#24283b 
+                highlight! link Winbar StatusLine
+                highlight! link WinbarNC StatusLineNC
             ]]
         end,
     },
