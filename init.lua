@@ -125,47 +125,21 @@ require("lazy").setup({
                         end
                     })
                 end,
-                ["svelte"] = function()
-                    require("lspconfig")["svelte"].setup({
-                        on_attach = function(client, bufnr)
-                            -- MAKE SVELTE TAKE OVER [BEGIN]
-                            local active_tsserver_client = vim.lsp.get_active_clients({ name = "tsserver" })[1]
-
-                            if active_tsserver_client ~= nil then
-                                local buffers = vim.lsp.get_buffers_by_client_id(active_tsserver_client.id)
-
-                                for i, bufnr in ipairs(buffers) do
-                                    vim.lsp.buf_attach_client(bufnr, client.id)
-                                end
-
-                                active_tsserver_client.stop()
-                            end
-                            -- MAKE SVELTE TAKE OVER [END]
-
-                            on_attach(client, bufnr)
-                        end
-                    })
-                end,
                 ["tsserver"] = function()
                     require("lspconfig")["tsserver"].setup({
                         on_attach = function(client, bufnr)
-                            -- MAKE VOLAR OR SVELTE TAKE OVER [BEGIN]
+                            -- MAKE VOLAR TAKE OVER [BEGIN]
                             local active_volar_client = vim.lsp.get_active_clients({ name = "volar" })[1]
-                            local active_svelte_client = vim.lsp.get_active_clients({ name = "svelte" })[1]
 
                             if active_volar_client ~= nil then
                                 vim.lsp.buf_attach_client(bufnr, active_volar_client.id)
                             end
 
-                            if active_svelte_client ~= nil then
-                                vim.lsp.buf_attach_client(bufnr, active_svelte_client.id)
-                            end
-
-                            if active_volar_client ~= nil or active_svelte_client ~= nil then
+                            if active_volar_client ~= nil then
                                 client.stop()
                                 return;
                             end
-                            -- MAKE VOLAR OR SVELTE TAKE OVER [END]
+                            -- MAKE VOLAR TAKE OVER [END]
 
                             on_attach(client, bufnr)
                         end
