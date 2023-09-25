@@ -1,5 +1,7 @@
 local utils = require("utils")
 
+local M = {}
+
 local function set_syntax_highlighting()
     vim.cmd [[
         if exists("b:current_syntax")
@@ -116,5 +118,8 @@ local function show_buffer_markers()
     utils.hide_cursor_line()
 end
 
-vim.keymap.set({"n", "v"}, "gm", show_buffer_markers)
+M.setup = function()
+    vim.keymap.set({"n", "v"}, "gm", show_buffer_markers)
+end
 
+return M

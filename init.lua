@@ -1,63 +1,13 @@
--- SETTINGS
 vim.cmd [[
-    set encoding=utf-8
-    set fileencoding=utf-8
-
-    set wildmenu
-    set wildignore+=node_modules/**
-
-    set signcolumn=yes
-    set number
-    set relativenumber
-    set cursorline
-    set nowrap
-    set breakindent
-    set expandtab
-
-    set tabstop=4
-    set softtabstop=4
-    set shiftwidth=4
-    " set smartindent
-    set autoindent
-
-    set incsearch
-    set inccommand=split
-    set ignorecase
-    set smartcase
-
-    set mouse=a
-
-    set numberwidth=6
-    set laststatus=2
-    set cmdheight=2
-
-    set hidden
-    set splitright
-    set splitbelow
-    set scrolloff=3
-    set list
-    set showtabline=2
-    set belloff=all
-    set termguicolors
-    set backspace=start,eol,indent
-
-    set completeopt-=preview
-    set completeopt+=noselect,menuone
-
-    if executable("rg")
-        set grepprg=rg\ --vimgrep\ --no-heading
-        set grepformat=%f:%l:%c:%m,%f:%l:%m
-    endif
-
-    " set updatetime=300
+    source $HOME/.config/nvim/core-config.vim
+    source $HOME/.config/nvim/abbrevs.vim
+    source $HOME/.config/nvim/commands.vim
+    source $HOME/.config/nvim/keymaps.vim
 ]]
 
-require("config/abbrevs")
-require("config/keybindings")
-require("config/commands")
-
-require("config/own-add-ons/git-blame")
-require("config/own-add-ons/meowser")
+-- Initilize own plugins
+-- require("own-plugins.git-blame").setup()
+require("own-plugins.meowser").setup()
 
 -- INSTALL LAZY.NVIM IF NOT INSTALLED [BEGIN]
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -86,7 +36,10 @@ require("lazy").setup({
             vim.cmd("")
             vim.cmd[[
                 colorscheme tokyonight
-                hi! @text.uri gui=NONE
+                highlight! @text.uri gui=NONE
+                highlight LineNr guibg=NONE guifg=#7aa2f7
+                highlight LineNrAbove guibg=NONE guifg=#db4b4b
+                highlight LineNrBelow guibg=NONE guifg=#9ece6a
             ]]
         end,
     },
@@ -196,14 +149,13 @@ require("lazy").setup({
                 ["tsserver"] = function()
                     require("lspconfig")["tsserver"].setup({
                         on_attach = function(client, bufnr)
-                            local active_volar_client = vim.lsp.get_active_clients({ name = "volar" })[1]
-
                             -- MAKE VOLAR OR SVELTE TAKE OVER [BEGIN]
+                            local active_volar_client = vim.lsp.get_active_clients({ name = "volar" })[1]
+                            local active_svelte_client = vim.lsp.get_active_clients({ name = "svelte" })[1]
+
                             if active_volar_client ~= nil then
                                 vim.lsp.buf_attach_client(bufnr, active_volar_client.id)
                             end
-
-                            local active_svelte_client = vim.lsp.get_active_clients({ name = "svelte" })[1]
 
                             if active_svelte_client ~= nil then
                                 vim.lsp.buf_attach_client(bufnr, active_svelte_client.id)

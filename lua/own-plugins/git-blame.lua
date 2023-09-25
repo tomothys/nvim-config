@@ -1,6 +1,6 @@
-local function trim(string)
-    return string:match("^%s*(.-)%s*$")
-end
+local utils = require("utils")
+
+local M = {}
 
 local function blame()
     local file = vim.fn.expand("%")
@@ -9,11 +9,13 @@ local function blame()
     local cmd = string.format("git blame -L %d,%d %s", line, line, file)
 
     local output = vim.fn.system(cmd)
-    print(trim(output))
+    print(utils.trim_string(output))
 end
 
-vim.keymap.set("n", "<leader>gb", function()
-    blame()
-end, {noremap = true})
+local M.setup = function()
+    vim.keymap.set("n", "<leader>gb", function()
+        blame()
+    end, {noremap = true})
+end
 
-
+return M
