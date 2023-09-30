@@ -35,14 +35,14 @@ require("lazy").setup({
         lazy = false, -- make sure we load this during startup if it is your main colorscheme
         priority = 1000, -- make sure to load this before all the other start plugins
         config = function()
-            vim.cmd("")
             vim.cmd[[
                 colorscheme tokyonight
                 highlight! @text.uri gui=NONE
                 highlight LineNr guibg=NONE guifg=#7aa2f7
                 highlight LineNrAbove guibg=NONE guifg=#db4b4b
                 highlight LineNrBelow guibg=NONE guifg=#9ece6a
-                highlight StatusLine gui=bold guifg=#ffffff guibg=#db4b4b " guifg=#24283b 
+                highlight StatusLine gui=bold guifg=#000000 guibg=#9ece6a
+                highlight StatusLineNC guifg=#9ece6a
                 highlight! link Winbar StatusLine
                 highlight! link WinbarNC StatusLineNC
             ]]
@@ -54,7 +54,6 @@ require("lazy").setup({
         "airblade/vim-rooter",
         config = function()
             vim.cmd [[
-                " let g:rooter_patterns = [".git"]
                 let g:rooter_patterns = []
             ]]
         end
@@ -166,25 +165,18 @@ require("lazy").setup({
         end
 
     },
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     {
-        "nvim-telescope/telescope.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
+        "junegunn/fzf.vim",
+        dependencies = { "junegunn/fzf" },
         config = function()
-            require("telescope").setup({
-                pickers = {
-                    find_files = { theme = "dropdown" },
-                    buffers = { theme = "dropdown" },
-                }
-            })
-            require("telescope").load_extension("fzf")
+            vim.cmd [[
+                let $FZF_DEFAULT_OPTS='--layout=reverse'
+                let $FZF_DEFAULT_COMMAND='rg --files --hidden -g "!{node_modules/*,.git/*}"'
+                let g:fzf_preview_window = []
+                let g:fzf_layout = {'window': { 'width': 0.6, 'height': 0.6, 'border': 'rounded' }}
+            ]]
 
-            local builtin = require("telescope.builtin")
-
-            vim.keymap.set("n", "<leader>p", builtin.find_files, {})
-            vim.keymap.set("n", "<leader>g", builtin.live_grep, {})
-            vim.keymap.set("n", "<leader>b", builtin.buffers, {})
-            vim.keymap.set("n", "<leader>h", builtin.help_tags, {})
+            vim.keymap.set("n", "<leader>p", ":Files<cr>", { silent=true })
         end
     },
     {
