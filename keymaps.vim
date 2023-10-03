@@ -8,7 +8,7 @@ nnoremap <leader>s /
 nnoremap <leader>S :grep
 
 " escape insert mode a little bit faster and more convenient
-inoremap jk <esc>
+inoremap jke <esc>
 
 " change behavior of o - stay in normal mode
 nnoremap o o<esc>
@@ -61,6 +61,10 @@ cnoremap g. :
 nnoremap <silent> <leader>w <c-w>
 nnoremap <silent> <leader>e :Lex<cr>
 
+" save current buffer
+nnoremap <silent> gw :w<cr>
+nnoremap <silent> gW :wa<cr>
+
 " insert mode mappings for ctrl+arrow keys
 inoremap <c-l> <right>
 inoremap <c-h> <left>
@@ -82,7 +86,7 @@ inoremap fk ,<c-]>
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()
-    vnoremap <buffer> gvl cconsole.log("<c-r>-", <c-r>-);
+    vnoremap <buffer> jkv "zyoconsole.log("<c-r>z", <c-r>z);<esc>
 endfunction
 
 augroup javascript_keymaps
@@ -90,3 +94,28 @@ augroup javascript_keymaps
     autocmd FileType javascript,javascriptreact,typescript,typescriptreact,svelte,vue call JavaScriptKeyMaps()
 augroup END
 
+" HTML keymaps
+function! CreateHtmlTag(is_selfclosing)
+    let l:tag = input('HTML-Tag: ')
+    let l:currentline = getline('.')
+
+    if a:is_selfclosing
+        let l:newline = l:currentline . '<' . l:tag . ' />'
+    else
+        let l:newline = l:currentline . '<' . l:tag . '></' . l:tag . '>'
+    endif
+
+    call setline('.', l:newline)
+
+    normal f>
+endfunction
+
+function! HtmlKeyMaps()
+    inoremap <silent> jktt <esc>:call CreateHtmlTag(v:false)<cr>
+    inoremap <silent> jkts <esc>:call CreateHtmlTag(v:true)<cr>
+endfunction
+
+augroup html_keymaps
+    autocmd!
+    autocmd FileType html,javascriptreact,typescriptreact,svelte,vue call HtmlKeyMaps()
+augroup END
