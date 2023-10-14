@@ -1,13 +1,14 @@
 " set mapleader to a space
 let g:mapleader = ' '
 
-" general normal mode mappings
+" Use search register to mark word under cursor
+nnoremap <silent> <leader>j :let @/="<c-r><c-w>" \| set hlsearch<cr>
+" Use search register to mark selected part
+vnoremap <silent> <leader>j "zy:let @/="<c-r>z" \| set hlsearch<cr>
+
+" general mappings to make life a little bit more convenient
 nnoremap s :
 nnoremap <silent> <esc> :nohl<cr><esc>
-nnoremap <leader>s /
-nnoremap <leader>S :grep
-
-" escape insert mode a little bit faster and more convenient
 inoremap jke <esc>
 
 " change behavior of o - stay in normal mode

@@ -27,7 +27,7 @@ set mouse=a
 
 set numberwidth=6
 set laststatus=2
-set cmdheight=2
+set cmdheight=1
 
 set hidden
 set splitright
