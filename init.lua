@@ -37,14 +37,28 @@ require("lazy").setup({
         config = function()
             vim.cmd[[
                 colorscheme tokyonight
+
                 highlight! @text.uri gui=NONE
-                highlight LineNr guibg=NONE guifg=#7aa2f7
-                highlight LineNrAbove guibg=NONE guifg=#db4b4b
-                highlight LineNrBelow guibg=NONE guifg=#9ece6a
-                highlight StatusLine gui=bold guifg=#000000 guibg=#9ece6a
-                highlight StatusLineNC guifg=#9ece6a
+
+                highlight LineNr guibg=#373640 guifg=#7aa2f7
+                highlight! link CursorLineNr LineNr
+                highlight LineNrAbove guibg=#373640 guifg=#db4b4b
+                highlight LineNrBelow guibg=#373640 guifg=#9ece6a
+
+                highlight StatusLine gui=bold guifg=#000000 guibg=#e0af68
+                highlight StatusLineNC guifg=#e0af68 guibg=#373640
                 highlight! link Winbar StatusLine
                 highlight! link WinbarNC StatusLineNC
+
+                highlight SignColumn guibg=#373640
+                highlight DiagnosticSignError guibg=#373640
+                highlight DiagnosticSignWarn guibg=#373640
+                highlight DiagnosticSignInfo guibg=#373640
+                highlight DiagnosticSignHint guibg=#373640
+                highlight DiagnosticSignOk guibg=#373640
+                highlight GitSignsAdd guibg=#373640
+                highlight GitSignsChange guibg=#373640
+                highlight GitSignsDelete guibg=#373640
             ]]
         end,
     },
@@ -179,6 +193,7 @@ require("lazy").setup({
             vim.keymap.set("n", "<leader>p", ":Files<cr>", { silent=true })
         end
     },
+    { "mg979/vim-visual-multi" },
     {
         "numToStr/Comment.nvim",
         config = function()
