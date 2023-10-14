@@ -14,6 +14,9 @@ inoremap jke <esc>
 nnoremap o o<esc>
 nnoremap O O<esc>
 
+nnoremap i i<c-f>
+nnoremap I I<c-f>
+
 " quickfix list
 nnoremap <silent> gl :cclose<cr>
 nnoremap <silent> go :copen<cr>
@@ -86,7 +89,7 @@ inoremap fk ,<c-]>
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()
-    vnoremap <buffer> jkv "zyoconsole.log("<c-r>z", <c-r>z);<esc>
+    vnoremap <buffer> gv "zyoconsole.log("<c-r>z", <c-r>z);<esc>
 endfunction
 
 augroup javascript_keymaps
@@ -97,12 +100,19 @@ augroup END
 " HTML keymaps
 function! CreateHtmlTag(is_selfclosing)
     let l:tag = input('HTML-Tag: ')
+    let l:class = input('Classes: ')
     let l:currentline = getline('.')
 
+    let l:newline = l:currentline . '<' . l:tag
+
+    if len(l:class) != 0
+        let l:newline = l:newline . ' class="' . l:class . '"'
+    endif
+
     if a:is_selfclosing
-        let l:newline = l:currentline . '<' . l:tag . ' />'
+        let l:newline = l:newline . ' />'
     else
-        let l:newline = l:currentline . '<' . l:tag . '></' . l:tag . '>'
+        let l:newline = l:newline . '></' . l:tag . '>'
     endif
 
     call setline('.', l:newline)
