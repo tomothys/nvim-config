@@ -40,7 +40,7 @@ require("lazy").setup({
 
                 highlight! @text.uri gui=NONE
 
-                highlight LineNr guibg=#373640 guifg=#7aa2f7
+                highlight LineNr gui=bold guibg=#373640 guifg=#7aa2f7
                 highlight! link CursorLineNr LineNr
                 highlight LineNrAbove guibg=#373640 guifg=#db4b4b
                 highlight LineNrBelow guibg=#373640 guifg=#9ece6a
@@ -51,11 +51,11 @@ require("lazy").setup({
                 highlight! link WinbarNC StatusLineNC
 
                 highlight SignColumn guibg=#373640
-                highlight DiagnosticSignError guibg=#373640
-                highlight DiagnosticSignWarn guibg=#373640
-                highlight DiagnosticSignInfo guibg=#373640
-                highlight DiagnosticSignHint guibg=#373640
-                highlight DiagnosticSignOk guibg=#373640
+                highlight DiagnosticSignError guifg=#db4b4b guibg=#373640
+                highlight DiagnosticSignWarn guifg=#e0af68 guibg=#373640
+                highlight DiagnosticSignInfo guifg=#0db9d7 guibg=#373640
+                highlight DiagnosticSignHint guifg=#1abc9c guibg=#373640
+                highlight DiagnosticSignOk ctermfg=10 guifg=LightGreen guibg=#373640
                 highlight GitSignsAdd guibg=#373640
                 highlight GitSignsChange guibg=#373640
                 highlight GitSignsDelete guibg=#373640
@@ -131,8 +131,8 @@ require("lazy").setup({
                             if active_tsserver_client ~= nil then
                                 local buffers = vim.lsp.get_buffers_by_client_id(active_tsserver_client.id)
 
-                                for i, bufnr in ipairs(buffers) do
-                                    vim.lsp.buf_attach_client(bufnr, client.id)
+                                for _, buffer in ipairs(buffers) do
+                                    vim.lsp.buf_attach_client(buffer, client.id)
                                 end
 
                                 active_tsserver_client.stop()
@@ -215,9 +215,10 @@ require("lazy").setup({
         config = function()
             require"gitsigns".setup {
                on_attach = function()
-                   vim.keymap.set("n", "<leader>gj", ":Gitsigns prev_hunk<cr>", { noremap = true, silent = true })
-                   vim.keymap.set("n", "<leader>gk", ":Gitsigns next_hunk<cr>", { noremap = true, silent = true })
+                   vim.keymap.set("n", "<leader>gk", ":Gitsigns prev_hunk<cr>", { noremap = true, silent = true })
+                   vim.keymap.set("n", "<leader>gj", ":Gitsigns next_hunk<cr>", { noremap = true, silent = true })
                    vim.keymap.set("n", "<leader>gd", ":Gitsigns diffthis<cr>", { noremap = true, silent = true })
+                   vim.keymap.set("n", "<leader>gb", ":Gitsigns blame_line<cr>", { noremap = true, silent = true })
                end
             }
         end
