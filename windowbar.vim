@@ -1,4 +1,4 @@
-function! SetWinbar()
+function! RenderWinbar()
     " LEFT SIDE
     set winbar=\ [bufnr]\ %{bufnr('%')}\ -\ %f\ %m\ %r
 
@@ -9,5 +9,5 @@ endfunction
 
 augroup Winbar
     au!
-    au BufEnter * call SetWinbar()
+    au BufEnter * call RenderWinbar()
 augroup END

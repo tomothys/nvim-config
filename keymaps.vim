@@ -63,7 +63,6 @@ cnoremap g. :
 
 " normal mode mappings for leader keys
 nnoremap <silent> <leader>w <c-w>
-nnoremap <silent> <leader>e :Lex<cr>
 
 " save current buffer
 nnoremap <silent> gw :w<cr>

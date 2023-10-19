@@ -5,6 +5,7 @@ vim.cmd [[
     source $HOME/.config/nvim/keymaps.vim
     source $HOME/.config/nvim/statusbar.vim
     source $HOME/.config/nvim/windowbar.vim
+    source $HOME/.config/nvim/bufferbar.vim
 ]]
 
 -- Initilize own plugins
@@ -49,6 +50,8 @@ require("lazy").setup({
                 highlight StatusLineNC guifg=#e0af68 guibg=#373640
                 highlight! link Winbar StatusLine
                 highlight! link WinbarNC StatusLineNC
+                highlight! link TablineFill StatusLineNC
+                highlight! link TablineSel StatusLine
 
                 highlight SignColumn guibg=#373640
                 highlight DiagnosticSignError guifg=#db4b4b guibg=#373640
@@ -82,6 +85,29 @@ require("lazy").setup({
                 highlight = { enable = true, additional_vim_regex_highlighting = false },
                 indent = { enable = true }
             })
+        end
+    },
+    {
+        "nvim-tree/nvim-tree.lua",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            -- disable netrw at the very start of your init.lua
+            vim.g.loaded_netrw = 1
+            vim.g.loaded_netrwPlugin = 1
+
+            -- set termguicolors to enable highlight groups
+            vim.opt.termguicolors = true
+
+            -- empty setup using defaults
+            require("nvim-tree").setup({
+                view = {
+                    width = 70,
+                    side = 'right',
+                    number = true
+                },
+            })
+
+            vim.keymap.set("n", "<leader>e", ":NvimTreeFindFileToggle<cr>", { silent = true })
         end
     },
     {
