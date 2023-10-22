@@ -6,15 +6,25 @@ nnoremap <silent> <leader>j :let @/="<c-r><c-w>" \| set hlsearch<cr>
 " Use search register to mark selected part
 vnoremap <silent> <leader>j "zy:let @/="<c-r>z" \| set hlsearch<cr>
 
+nnoremap + "+
+vnoremap + "+
+
 " general mappings to make life a little bit more convenient
 nnoremap s :
 nnoremap <silent> <esc> :nohl<cr><esc>
 inoremap jke <esc>
 
+" select pasted before
+nnoremap p p`[v`]
+nnoremap P P`[v`]
+vnoremap p p`[v`]
+vnoremap P P`[v`]
+
 " change behavior of o - stay in normal mode
 nnoremap o o<esc>
 nnoremap O O<esc>
 
+" reindent when entering insert mode via i/I
 nnoremap i i<c-f>
 nnoremap I I<c-f>
 
@@ -58,9 +68,6 @@ cnoremap g+ ``<left>
 inoremap g# ''<left>
 cnoremap g# ''<left>
 
-inoremap g. :
-cnoremap g. :
-
 " normal mode mappings for leader keys
 nnoremap <silent> <leader>w <c-w>
 
@@ -71,14 +78,10 @@ nnoremap <silent> gW :wa<cr>
 " insert mode mappings for ctrl+arrow keys
 inoremap <c-l> <right>
 inoremap <c-h> <left>
-inoremap <c-j> <down>
-inoremap <c-k> <up>
 
 " command mode mappings for ctrl+arrow keys
 cnoremap <c-l> <right>
 cnoremap <c-h> <left>
-cnoremap <c-j> <down>
-cnoremap <c-k> <up>
 
 " add j and k jumps to jump-list
 nnoremap <expr> j v:count > 1 ? "m'" . v:count . 'j' : 'j'
@@ -99,11 +102,16 @@ augroup END
 
 " HTML keymaps
 function! CreateHtmlTag(is_selfclosing)
-    let l:tag = input('HTML-Tag: ')
-    let l:class = input('Classes: ')
-    let l:currentline = getline('.')
+    let l:input = input('HTML-Tag: ')
 
-    let l:newline = l:currentline . '<' . l:tag
+    let l:tag = matchstr(l:input, '^\S\+')
+    let l:class = strpart(l:input, len(l:tag)+1)
+
+    let l:pos = getpos('.')
+    let l:line = l:pos[1]
+    let l:col = l:pos[2]
+
+    let l:newline = '<' . l:tag
 
     if len(l:class) != 0
         let l:newline = l:newline . ' class="' . l:class . '"'
@@ -115,14 +123,50 @@ function! CreateHtmlTag(is_selfclosing)
         let l:newline = l:newline . '></' . l:tag . '>'
     endif
 
-    call setline('.', l:newline)
+    exec 'normal i' .. l:newline
 
-    normal f>
+    call setpos('.', l:pos)
+endfunction
+
+" Add attributes to HTML Elements
+function! AddAttrToHtmlTag()
+    let l:input = input('Attributes: ')
+
+    let l:attr = matchstr(l:input, '^\S\+')
+    let l:value = strpart(l:input, len(l:attr)+1)
+
+    let l:pos = getpos('.')
+    let l:line = l:pos[1]
+    let l:col = l:pos[2]
+
+    let l:is_self_closing_tag = search('/>', 'cn')
+
+    if l:is_self_closing_tag
+        normal f/
+    else
+        normal f>
+    endif
+
+    let l:string = l:attr
+
+    if len(l:value)
+        let l:string .= '="' .. l:value .. '"'
+    endif
+
+    execute 'normal i ' .. l:string
+
+    call setpos('.', l:pos)
 endfunction
 
 function! HtmlKeyMaps()
-    inoremap <silent> jktt <esc>:call CreateHtmlTag(v:false)<cr>
-    inoremap <silent> jkts <esc>:call CreateHtmlTag(v:true)<cr>
+    inoremap <silent> <buffer> jktt <esc>:call CreateHtmlTag(v:false)<cr>
+    nnoremap <silent> <buffer> <leader>ht :call CreateHtmlTag(v:false)<cr>
+
+    inoremap <silent> <buffer> jkts <esc>:call CreateHtmlTag(v:true)<cr>
+    nnoremap <silent> <buffer> <leader>hs :call CreateHtmlTag(v:true)<cr>
+
+    inoremap <silent> <buffer> jka <esc>:call AddAttrToHtmlTag()<cr>
+    nnoremap <silent> <buffer> <leader>ha :call AddAttrToHtmlTag()<cr>
 endfunction
 
 augroup html_keymaps
