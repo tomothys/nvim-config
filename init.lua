@@ -111,99 +111,35 @@ require("lazy").setup({
         end
     },
     {
-        "williamboman/mason.nvim",
-        dependencies = { "williamboman/mason-lspconfig.nvim", "neovim/nvim-lspconfig" },
+        "neoclide/coc.nvim",
         config = function()
-            require("mason").setup()
-            require("mason-lspconfig").setup({
-                ensure_installed = { "tsserver", "cssls", "eslint", "html", "jsonls", "svelte", "tailwindcss", "vimls", "volar" }
-            })
+            -- Some servers have issues with backup files, see #649
+            vim.opt.backup = false
+            vim.opt.writebackup = false
 
-            local on_attach = function(client, buffer)
-                vim.keymap.set("n", "gh", vim.lsp.buf.hover, { buffer = buffer })
-                vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buffer })
-                vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = buffer })
-                vim.keymap.set("n", "gr", vim.lsp.buf.rename, { buffer = buffer })
-                vim.keymap.set("n", "gR", vim.lsp.buf.references, { buffer = buffer })
-                vim.keymap.set("n", "ga", vim.lsp.buf.code_action, { buffer = buffer })
-                vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = buffer })
-                vim.keymap.set("n", "ge", vim.diagnostic.open_float, { buffer = buffer })
-                vim.keymap.set("i", "<c-s>", vim.lsp.buf.signature_help, { buffer = buffer })
-
-                if client.supports_method("textDocument/formatting") then
-                    vim.api.nvim_create_autocmd("BufWritePost", {
-                        command = "Prettier",
-                        buffer = buffer,
-                    })
+            -- Use K to show documentation in preview window
+            function _G.show_docs()
+                local cw = vim.fn.expand('<cword>')
+                if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
+                    vim.api.nvim_command('h ' .. cw)
+                elseif vim.api.nvim_eval('coc#rpc#ready()') then
+                    vim.fn.CocActionAsync('doHover')
+                else
+                    vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
                 end
             end
+            vim.keymap.set("n", "gh", '<CMD>lua _G.show_docs()<CR>', {silent = true})
 
-            require("mason-lspconfig").setup_handlers({
-                function (server_name)
-                    require("lspconfig")[server_name].setup({ on_attach = on_attach })
-                end,
-                ["tailwindcss"] = function()
-                    require("lspconfig")["tailwindcss"].setup({
-                        on_attach = on_attach,
-                        filetypes = { "html", "vue", "svelte", "css", "scss", "javascriptreact", "typescriptreact" },
-                    })
-                end,
-                ["volar"] = function()
-                    require("lspconfig")["volar"].setup({
-                        on_attach = function(client, bufnr)
-                            -- MAKE VOLAR TAKE OVER [BEGIN]
-                            local active_tsserver_client = vim.lsp.get_active_clients({ name = "tsserver" })[1]
+            vim.keymap.set("n", "ge", "", {silent = true, expr = true, noremap = true})
+            vim.keymap.set("n", "gr", "<Plug>(coc-rename)", {silent = true, noremap = true})
+            vim.keymap.set("n", "gR", "<plug>(coc-references)", {silent = true, noremap = true})
+            vim.keymap.set("n", "gd", "<Plug>(coc-definition)", {silent = true, noremap = true})
+            vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", {silent = true, noremap = true})
 
-                            if active_tsserver_client ~= nil then
-                                local buffers = vim.lsp.get_buffers_by_client_id(active_tsserver_client.id)
-
-                                for _, buffer in ipairs(buffers) do
-                                    vim.lsp.buf_attach_client(buffer, client.id)
-                                end
-
-                                active_tsserver_client.stop()
-                            end
-                            -- MAKE VOLAR TAKE OVER [END]
-
-                            on_attach(client, bufnr)
-                        end
-                    })
-                end,
-                ["tsserver"] = function()
-                    require("lspconfig")["tsserver"].setup({
-                        on_attach = function(client, bufnr)
-                            -- MAKE VOLAR TAKE OVER [BEGIN]
-                            local active_volar_client = vim.lsp.get_active_clients({ name = "volar" })[1]
-
-                            if active_volar_client ~= nil then
-                                vim.lsp.buf_attach_client(bufnr, active_volar_client.id)
-                            end
-
-                            if active_volar_client ~= nil then
-                                client.stop()
-                                return;
-                            end
-                            -- MAKE VOLAR TAKE OVER [END]
-
-                            on_attach(client, bufnr)
-                        end
-                    })
-                end,
-            })
-
-            vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-                border = "rounded"
-            })
-
-            vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-                border = "rounded"
-            })
-
-            vim.diagnostic.config({
-                float = { border = "rounded" }
-            })
+            vim.keymap.set("i", "<c-j>", [[coc#pum#visible() ? coc#pum#next(1) : coc#refresh()]], {silent = true, noremap = true, expr = true, replace_keycodes = false})
+            vim.keymap.set("i", "<c-k>", [[coc#pum#visible() ? coc#pum#prev(1) : coc#refresh()]], {silent = true, noremap = true, expr = true, replace_keycodes = false})
+            vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]], {silent = true, noremap = true, expr = true, replace_keycodes = false})
         end
-
     },
     {
         "junegunn/fzf.vim",
