@@ -1,9 +1,9 @@
 " JavaScript keymaps
 function! JavaScriptAbbrevs()
-    inoreab <buffer> a, &&
-    inoreab <buffer> o, \|\|
-    inoreab <buffer> e, ===
-    inoreab <buffer> ne, !==
+    inoreab <buffer> a, &&<space>
+    inoreab <buffer> o, \|\|<space>
+    inoreab <buffer> e, ===<space>
+    inoreab <buffer> ne, !==<space>
     inoreab <buffer> b, []<left>
     inoreab <buffer> c, {<cr>}<c-o>O
     inoreab <buffer> p, ()<left>
@@ -25,12 +25,17 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> fa, (_param) => {}<esc>vb
     inoreab <buffer> fn, function name(_param) {<cr>}<esc>k03fnve<c-g>
     inoreab <buffer> fm, _name() {<cr>}<esc>k0f_ve<c-g>
+
     inoreab <buffer> clog, console.log("");<c-o>F"
+
     inoreab <buffer> if, if () {}<left><cr><up><esc>0f)i
     inoreab <buffer> el, <esc>/}<cr>:nohl<cr>a else {}<left><cr><esc>O
     inoreab <buffer> elif, <esc>/}<cr>:nohl<cr>a else if () {}<left><cr><up><esc>0f)i
+
     inoreab <buffer> imp, import {}<c-o>mb from "";<left><left>
-    inoreab <buffer> cn, const<space><space>=<space>;<left><left><left><left>
+    inoreab <buffer> ex, export<space>
+
+    inoreab <buffer> cn, const<space><space>=<space><left><left><left>
 
     inoreab <buffer> try, try {<cr>} catch(error) {<cr>console.error(error)<cr>}<c-o>2k<c-o>O
 
