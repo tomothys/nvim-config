@@ -40,7 +40,7 @@ require("lazy").setup({
                 colorscheme tokyonight
 
                 highlight! @text.uri gui=NONE
-                highlight! link Comment StatusLine
+                highlight! link Comment StatusLineNC
 
                 highlight LineNr gui=bold guibg=#373640 guifg=#7aa2f7
                 highlight! link CursorLineNr LineNr
