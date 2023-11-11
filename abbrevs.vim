@@ -4,10 +4,6 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> o, \|\|<space>
     inoreab <buffer> e, ===<space>
     inoreab <buffer> ne, !==<space>
-    inoreab <buffer> b, []<left>
-    inoreab <buffer> c, {<cr>}<c-o>O
-    inoreab <buffer> p, ()<left>
-    inoreab <buffer> h, <><left>
     inoreab <buffer> t, true
     inoreab <buffer> f, false
     inoreab <buffer> u, undefined
@@ -20,13 +16,12 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> isn, === null
     inoreab <buffer> isnn, !== null
     inoreab <buffer> isf, === false
-    inoreab <buffer> isnf, !== false
 
     inoreab <buffer> fa, (_param) => {}<esc>vb
     inoreab <buffer> fn, function name(_param) {<cr>}<esc>k03fnve<c-g>
     inoreab <buffer> fm, _name() {<cr>}<esc>k0f_ve<c-g>
 
-    inoreab <buffer> clog, console.log("");<c-o>F"
+    inoreab <buffer> cl, console.log("");<c-o>F"
 
     inoreab <buffer> if, if () {}<left><cr><up><esc>0f)i
     inoreab <buffer> el, <esc>/}<cr>:nohl<cr>a else {}<left><cr><esc>O
@@ -46,6 +41,8 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> th, .then((_param) => {<cr>})<c-o>O
     inoreab <buffer> ca, .catch((error) => {<cr>console.error(error);<cr>})<c-o>O
     inoreab <buffer> fi, .finally(() => {<cr>})<c-o>O
+
+    inoreab <buffer> r, return
 endfunction
 
 augroup javascript_abbrevs
@@ -102,7 +99,7 @@ function! CssAbbrevs()
     inoreab <buffer> lc, :last-child
     inoreab <buffer> nc, :nth-child()<left>
 
-    inoreab <buffer> c, color: ;<left>
+    inoreab <buffer> co, color: ;<left>
     inoreab <buffer> bg, background: ;<left>
     inoreab <buffer> bgc, background-color: ;<left>
     inoreab <buffer> bo, border: ;<left>
