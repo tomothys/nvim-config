@@ -1,5 +1,5 @@
 {
-    "svelte.enable-ts-plugin": false,
+    "svelte.enable-ts-plugin": true,
     "coc.preferences.formatOnSave": true,
     "dialog.rounded": true,
     "outline.previewBorder": true,
