@@ -33,10 +33,10 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     {
         "folke/tokyonight.nvim",
-        lazy = false, -- make sure we load this during startup if it is your main colorscheme
+        lazy = false,    -- make sure we load this during startup if it is your main colorscheme
         priority = 1000, -- make sure to load this before all the other start plugins
         config = function()
-            vim.cmd[[
+            vim.cmd [[
                 colorscheme tokyonight
 
                 highlight! @text.uri gui=NONE
@@ -63,6 +63,10 @@ require("lazy").setup({
                 highlight GitSignsAdd guibg=#373640
                 highlight GitSignsChange guibg=#373640
                 highlight GitSignsDelete guibg=#373640
+
+                highlight NormalFloat guifg=#c0caf5 guibg=#373640
+                highlight! link FloatBorder StatusLineNC
+                highlight! link FloatTitle FloatBorder
             ]]
         end,
     },
@@ -80,7 +84,8 @@ require("lazy").setup({
         "nvim-treesitter/nvim-treesitter",
         config = function()
             require("nvim-treesitter.configs").setup({
-                ensure_installed = { "svelte", "vue", "c", "lua", "vim", "vimdoc", "query", "tsx", "typescript", "javascript", "html", "css", "scss", "json", "yaml", "toml", "bash", "rust", "regex", "comment" },
+                ensure_installed = { "svelte", "vue", "c", "lua", "vim", "vimdoc", "query", "tsx", "typescript",
+                    "javascript", "html", "css", "scss", "json", "yaml", "toml", "bash", "rust", "regex", "comment" },
                 sync_install = false,
                 auto_install = true,
                 highlight = { enable = true, additional_vim_regex_highlighting = false },
@@ -121,7 +126,7 @@ require("lazy").setup({
             -- Use K to show documentation in preview window
             function _G.show_docs()
                 local cw = vim.fn.expand('<cword>')
-                if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
+                if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
                     vim.api.nvim_command('h ' .. cw)
                 elseif vim.api.nvim_eval('coc#rpc#ready()') then
                     vim.fn.CocActionAsync('doHover')
@@ -129,17 +134,21 @@ require("lazy").setup({
                     vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
                 end
             end
-            vim.keymap.set("n", "gh", '<CMD>lua _G.show_docs()<CR>', {silent = true})
 
-            vim.keymap.set("n", "ge", "", {silent = true, expr = true, noremap = true})
-            vim.keymap.set("n", "gr", "<Plug>(coc-rename)", {silent = true, noremap = true})
-            vim.keymap.set("n", "gR", "<plug>(coc-references)", {silent = true, noremap = true})
-            vim.keymap.set("n", "gd", "<Plug>(coc-definition)", {silent = true, noremap = true})
-            vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", {silent = true, noremap = true})
+            vim.keymap.set("n", "gh", '<CMD>lua _G.show_docs()<CR>', { silent = true })
 
-            vim.keymap.set("i", "<c-j>", [[coc#pum#visible() ? coc#pum#next(1) : coc#refresh()]], {silent = true, noremap = true, expr = true, replace_keycodes = false})
-            vim.keymap.set("i", "<c-k>", [[coc#pum#visible() ? coc#pum#prev(1) : coc#refresh()]], {silent = true, noremap = true, expr = true, replace_keycodes = false})
-            vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]], {silent = true, noremap = true, expr = true, replace_keycodes = false})
+            vim.keymap.set("n", "ge", "", { silent = true, expr = true, noremap = true })
+            vim.keymap.set("n", "gr", "<Plug>(coc-rename)", { silent = true, noremap = true })
+            vim.keymap.set("n", "gR", "<plug>(coc-references)", { silent = true, noremap = true })
+            vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, noremap = true })
+            vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", { silent = true, noremap = true })
+
+            vim.keymap.set("i", "<c-j>", [[coc#pum#visible() ? coc#pum#next(1) : coc#refresh()]],
+                { silent = true, noremap = true, expr = true, replace_keycodes = false })
+            vim.keymap.set("i", "<c-k>", [[coc#pum#visible() ? coc#pum#prev(1) : coc#refresh()]],
+                { silent = true, noremap = true, expr = true, replace_keycodes = false })
+            vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]],
+                { silent = true, noremap = true, expr = true, replace_keycodes = false })
         end
     },
     {
@@ -153,7 +162,7 @@ require("lazy").setup({
                 let g:fzf_layout = {'window': { 'width': 0.6, 'height': 0.6, 'border': 'rounded' }}
             ]]
 
-            vim.keymap.set("n", "<leader>p", ":Files<cr>", { silent=true })
+            vim.keymap.set("n", "<leader>p", ":Files<cr>", { silent = true })
         end
     },
     { "mg979/vim-visual-multi" },
@@ -166,23 +175,23 @@ require("lazy").setup({
     {
         "tpope/vim-fugitive",
         config = function()
-            vim.keymap.set("n", "<leader>gg", ":vert Git<cr>", {noremap = true, silent = true})
-            vim.keymap.set("n", "<leader>gp", ":Git push<cr>", {noremap = true, silent = true})
-            vim.keymap.set("n", "<leader>gP", ":Git pull<cr>", {noremap = true, silent = true})
-            vim.keymap.set("n", "<leader>gf", ":Git fetch<cr>", {noremap = true, silent = true})
-            vim.keymap.set("n", "<leader>gc", ":Git commit<cr>", {noremap = true, silent = true})
+            vim.keymap.set("n", "<leader>gg", ":vert Git<cr>", { noremap = true, silent = true })
+            vim.keymap.set("n", "<leader>gp", ":Git push<cr>", { noremap = true, silent = true })
+            vim.keymap.set("n", "<leader>gP", ":Git pull<cr>", { noremap = true, silent = true })
+            vim.keymap.set("n", "<leader>gf", ":Git fetch<cr>", { noremap = true, silent = true })
+            vim.keymap.set("n", "<leader>gc", ":Git commit<cr>", { noremap = true, silent = true })
         end
     },
     {
         "lewis6991/gitsigns.nvim",
         config = function()
-            require"gitsigns".setup {
-               on_attach = function()
-                   vim.keymap.set("n", "<leader>gk", ":Gitsigns prev_hunk<cr>", { noremap = true, silent = true })
-                   vim.keymap.set("n", "<leader>gj", ":Gitsigns next_hunk<cr>", { noremap = true, silent = true })
-                   vim.keymap.set("n", "<leader>gd", ":Gitsigns diffthis<cr>", { noremap = true, silent = true })
-                   vim.keymap.set("n", "<leader>gb", ":Gitsigns blame_line<cr>", { noremap = true, silent = true })
-               end
+            require "gitsigns".setup {
+                on_attach = function()
+                    vim.keymap.set("n", "<leader>gk", ":Gitsigns prev_hunk<cr>", { noremap = true, silent = true })
+                    vim.keymap.set("n", "<leader>gj", ":Gitsigns next_hunk<cr>", { noremap = true, silent = true })
+                    vim.keymap.set("n", "<leader>gd", ":Gitsigns diffthis<cr>", { noremap = true, silent = true })
+                    vim.keymap.set("n", "<leader>gb", ":Gitsigns blame_line<cr>", { noremap = true, silent = true })
+                end
             }
         end
     },
