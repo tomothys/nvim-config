@@ -1,6 +1,6 @@
 inoreab k, <c-o>O
 
-" JavaScript keymaps
+" JavaScript abbrevs
 function! JavaScriptAbbrevs()
     inoreab <buffer> a, &&<space>
     inoreab <buffer> o, \|\|<space>
@@ -11,7 +11,7 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> u, undefined
     inoreab <buffer> n, null
 
-    inoreab <buffer> com, //<space>
+    inoreab <buffer> com, /**<cr>*<cr>**/<esc>kA<space>
 
     inoreab <buffer> isu, === undefined
     inoreab <buffer> isnu, !== undefined
@@ -19,8 +19,8 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> isnn, !== null
     inoreab <buffer> isf, === false
 
-    inoreab <buffer> fa, (_param) => {}<esc>vb
-    inoreab <buffer> fn, function name(_param) {<cr>}<esc>k03fnve<c-g>
+    inoreab <buffer> fa, (param) => {}<esc>vb
+    inoreab <buffer> fn, function name(param) {<cr>}<esc>k03fnve<c-g>
     inoreab <buffer> fm, _name() {<cr>}<esc>k0f_ve<c-g>
 
     inoreab <buffer> cl, console.log("");<c-o>F"
@@ -40,9 +40,9 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> pall, await Promise.all([<cr>])<c-o>O
     inoreab <buffer> pals, await Promise.allSettled([<cr>])<c-o>O
 
-    inoreab <buffer> th, .then((_param) => {<cr>})<c-o>O
-    inoreab <buffer> ca, .catch((error) => {<cr>console.error(error);<cr>})<c-o>O
-    inoreab <buffer> fi, .finally(() => {<cr>})<c-o>O
+    inoreab <buffer> th, <bs>.then((_param) => {<cr>})<c-o>O
+    inoreab <buffer> ca, <bs>.catch((error) => {<cr>console.error(error);<cr>})<c-o>O
+    inoreab <buffer> fi, <bs>.finally(() => {<cr>})<c-o>O
 
     inoreab <buffer> r, return
 endfunction
@@ -92,16 +92,8 @@ augroup END
 " CSS abbrevs
 function! CssAbbrevs()
     inoreab <buffer> cl, .class {<cr>}<esc>k0fcviw<c-g>
-    inoreab <buffer> hv, :hover
-    inoreab <buffer> af, :after
-    inoreab <buffer> bf, :before
-    inoreab <buffer> da, :disabled
-    inoreab <buffer> no, :not()<left>
-    inoreab <buffer> fc, :first-child
-    inoreab <buffer> lc, :last-child
-    inoreab <buffer> nc, :nth-child()<left>
 
-    inoreab <buffer> co, color: ;<left>
+    inoreab <buffer> c, color: ;<left>
     inoreab <buffer> bg, background: ;<left>
     inoreab <buffer> bgc, background-color: ;<left>
     inoreab <buffer> bo, border: ;<left>
@@ -124,15 +116,15 @@ function! CssAbbrevs()
     inoreab <buffer> dib, display: inline-block;
     inoreab <buffer> df, display: flex;
     inoreab <buffer> dif, display: inline-flex;
-    inoreab <buffer> jc, justify-content: center;<esc>bciw<c-g>
-    inoreab <buffer> ai, align-items: center;<esc>bciw<c-g>
+    inoreab <buffer> jc, justify-content: center;<esc>bviw<c-g>
+    inoreab <buffer> ai, align-items: center;<esc>bviw<c-g>
     inoreab <buffer> dg, display: grid;
     inoreab <buffer> gc, grid-template-columns: ;<left>
     inoreab <buffer> gr, grid-template-rows: ;<left>
     inoreab <buffer> g, gap: ;<left>
     inoreab <buffer> tf, transform: ;<left>
     inoreab <buffer> ts, transition: ;<left>
-    inoreab <buffer> o, opacity: ;<left>
+    inoreab <buffer> op, opacity: ;<left>
     inoreab <buffer> cp, cursor: pointer;<left>
     inoreab <buffer> lg, linear-gradient()<left>
     inoreab <buffer> cm, color-mix(in srgb, color_one, white)<esc>4bve<c-g>
