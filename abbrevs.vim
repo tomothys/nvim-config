@@ -1,3 +1,5 @@
+inoreab k, <c-o>O
+
 " JavaScript keymaps
 function! JavaScriptAbbrevs()
     inoreab <buffer> a, &&<space>
