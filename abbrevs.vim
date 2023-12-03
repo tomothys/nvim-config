@@ -91,8 +91,6 @@ augroup END
 
 " CSS abbrevs
 function! CssAbbrevs()
-    inoreab <buffer> cl, .class {<cr>}<esc>k0fcviw<c-g>
-
     inoreab <buffer> c, color: ;<left>
     inoreab <buffer> bg, background: ;<left>
     inoreab <buffer> bgc, background-color: ;<left>
@@ -122,12 +120,8 @@ function! CssAbbrevs()
     inoreab <buffer> gc, grid-template-columns: ;<left>
     inoreab <buffer> gr, grid-template-rows: ;<left>
     inoreab <buffer> g, gap: ;<left>
-    inoreab <buffer> tf, transform: ;<left>
-    inoreab <buffer> ts, transition: ;<left>
     inoreab <buffer> op, opacity: ;<left>
     inoreab <buffer> cp, cursor: pointer;<left>
-    inoreab <buffer> lg, linear-gradient()<left>
-    inoreab <buffer> cm, color-mix(in srgb, color_one, white)<esc>4bve<c-g>
 endfunction
 
 augroup css_abbrevs
