@@ -91,8 +91,6 @@ augroup END
 
 " CSS abbrevs
 function! CssAbbrevs()
-    inoreab <buffer> cl, .class {<cr>}<esc>k0fcviw<c-g>
-
     inoreab <buffer> c, color: ;<left>
     inoreab <buffer> bg, background: ;<left>
     inoreab <buffer> bgc, background-color: ;<left>
