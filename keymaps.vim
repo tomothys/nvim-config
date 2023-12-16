@@ -12,7 +12,6 @@ vnoremap + "+
 " general mappings to make life a little bit more convenient
 nnoremap s :
 nnoremap <silent> <esc> :nohl<cr><esc>
-inoremap jke <esc>
 
 " select pasted before
 nnoremap p p`[v`]
@@ -88,7 +87,7 @@ nnoremap <expr> j v:count > 1 ? "m'" . v:count . 'j' : 'j'
 nnoremap <expr> k v:count > 1 ? "m'" . v:count . 'k' : 'k'
 
 " trigger abbreviations
-inoremap fk ,<c-]>
+" inoremap fk ,<c-]>
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()
@@ -98,78 +97,4 @@ endfunction
 augroup javascript_keymaps
     autocmd!
     autocmd FileType javascript,javascriptreact,typescript,typescriptreact,svelte,vue call JavaScriptKeyMaps()
-augroup END
-
-" HTML keymaps
-function! CreateHtmlTag(is_selfclosing)
-    let l:input = input('HTML-Tag: ')
-
-    let l:tag = matchstr(l:input, '^\S\+')
-    let l:class = strpart(l:input, len(l:tag)+1)
-
-    let l:pos = getpos('.')
-    let l:line = l:pos[1]
-    let l:col = l:pos[2]
-
-    let l:newline = '<' . l:tag
-
-    if len(l:class) != 0
-        let l:newline = l:newline . ' class="' . l:class . '"'
-    endif
-
-    if a:is_selfclosing
-        let l:newline = l:newline . ' />'
-    else
-        let l:newline = l:newline . '></' . l:tag . '>'
-    endif
-
-    exec 'normal i' .. l:newline
-
-    call setpos('.', l:pos)
-endfunction
-
-" Add attributes to HTML Elements
-function! AddAttrToHtmlTag()
-    let l:input = input('Attributes: ')
-
-    let l:attr = matchstr(l:input, '^\S\+')
-    let l:value = strpart(l:input, len(l:attr)+1)
-
-    let l:pos = getpos('.')
-    let l:line = l:pos[1]
-    let l:col = l:pos[2]
-
-    let l:is_self_closing_tag = search('/>', 'cn')
-
-    if l:is_self_closing_tag
-        normal f/
-    else
-        normal f>
-    endif
-
-    let l:string = l:attr
-
-    if len(l:value)
-        let l:string .= '="' .. l:value .. '"'
-    endif
-
-    execute 'normal i ' .. l:string
-
-    call setpos('.', l:pos)
-endfunction
-
-function! HtmlKeyMaps()
-    inoremap <silent> <buffer> jktt <esc>:call CreateHtmlTag(v:false)<cr>
-    nnoremap <silent> <buffer> <leader>ht :call CreateHtmlTag(v:false)<cr>
-
-    inoremap <silent> <buffer> jkts <esc>:call CreateHtmlTag(v:true)<cr>
-    nnoremap <silent> <buffer> <leader>hs :call CreateHtmlTag(v:true)<cr>
-
-    inoremap <silent> <buffer> jka <esc>:call AddAttrToHtmlTag()<cr>
-    nnoremap <silent> <buffer> <leader>ha :call AddAttrToHtmlTag()<cr>
-endfunction
-
-augroup html_keymaps
-    autocmd!
-    autocmd FileType html,javascriptreact,typescriptreact,svelte,vue call HtmlKeyMaps()
 augroup END
