@@ -12,7 +12,6 @@ vnoremap + "+
 " general mappings to make life a little bit more convenient
 nnoremap s :
 nnoremap <silent> <esc> :nohl<cr><esc>
-inoremap jk <esc>
 
 " select pasted before
 nnoremap p p`[v`]
@@ -88,7 +87,7 @@ nnoremap <expr> j v:count > 1 ? "m'" . v:count . 'j' : 'j'
 nnoremap <expr> k v:count > 1 ? "m'" . v:count . 'k' : 'k'
 
 " trigger abbreviations
-inoremap fk ,<c-]>
+" inoremap fk ,<c-]>
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()

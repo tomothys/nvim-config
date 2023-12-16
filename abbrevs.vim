@@ -2,35 +2,13 @@ inoreab k, <c-o>O
 
 " JavaScript abbrevs
 function! JavaScriptAbbrevs()
-    inoreab <buffer> a, &&<space>
-    inoreab <buffer> o, \|\|<space>
-    inoreab <buffer> e, ===<space>
-    inoreab <buffer> ne, !==<space>
-    inoreab <buffer> t, true
-    inoreab <buffer> f, false
-    inoreab <buffer> u, undefined
-    inoreab <buffer> n, null
-
-    inoreab <buffer> com, /**<cr>*<cr>**/<esc>kA<space>
-
     inoreab <buffer> isu, === undefined
     inoreab <buffer> isnu, !== undefined
     inoreab <buffer> isn, === null
     inoreab <buffer> isnn, !== null
     inoreab <buffer> isf, === false
 
-    inoreab <buffer> fa, (param) => {}<esc>vb
-    inoreab <buffer> fn, function name(param) {<cr>}<esc>k03fnve<c-g>
-    inoreab <buffer> fm, _name() {<cr>}<esc>k0f_ve<c-g>
-
-    inoreab <buffer> cl, console.log("");<c-o>F"
-
-    inoreab <buffer> if, if () {}<left><cr><up><esc>0f)i
-    inoreab <buffer> el, <esc>/}<cr>:nohl<cr>a else {}<left><cr><esc>O
-    inoreab <buffer> elif, <esc>/}<cr>:nohl<cr>a else if () {}<left><cr><up><esc>0f)i
-
     inoreab <buffer> imp, import {}<c-o>mb from "";<left><left>
-    inoreab <buffer> ex, export<space>
 
     inoreab <buffer> cn, const<space><space>=<space><left><left><left>
 
@@ -122,7 +100,7 @@ function! CssAbbrevs()
     inoreab <buffer> g, gap: ;<left>
     inoreab <buffer> tf, transform: ;<left>
     inoreab <buffer> ts, transition: ;<left>
-    inoreab <buffer> op, opacity: ;<left>
+    inoreab <buffer> o, opacity: ;<left>
     inoreab <buffer> cp, cursor: pointer;<left>
     inoreab <buffer> lg, linear-gradient()<left>
     inoreab <buffer> cm, color-mix(in srgb, color_one, white)<esc>4bve<c-g>
