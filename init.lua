@@ -201,38 +201,27 @@ require("lazy").setup({
             vim.cmd [[
                 " Global chords
                 Arpeggio inoremap fk ,<c-]>
-                Arpeggio inoremap je <Esc>
-                Arpeggio inoremap jo <esc>O
+                Arpeggio inoremap ej <Esc>
+                Arpeggio inoremap jk <esc>O
 
-                Arpeggio inoremap or \|
-                Arpeggio inoremap and &&<space>
                 Arpeggio inoremap sl /
+                Arpeggio nnoremap sl /
                 Arpeggio inoremap bl \
-                Arpeggio inoremap le ;
-                Arpeggio inoremap dp :<space>
                 Arpeggio inoremap gh <><left>
-                Arpeggio nnoremap dp :
 
-                Arpeggio inoremap aw await<space>
-                Arpeggio inoremap ud undefined
-                Arpeggio inoremap nl null
-                Arpeggio inoremap fj false
-                Arpeggio inoremap tj true
-                Arpeggio inoremap fn function
                 Arpeggio inoremap fm ()<c-o>mb {<cr>}<c-o>O
-                Arpeggio inoremap fa ()<c-o>mb => {}<left>
-                Arpeggio inoremap ma .map(() => {})<c-o>F)
-                Arpeggio inoremap fl .filter(() => {})<c-o>F)
-                Arpeggio inoremap re .reduce((acc, ) => {}, undefined)<c-o>F)
-                Arpeggio inoremap cn const<space><space>=<space><left><left><left>
-                Arpeggio inoremap if if () {<cr>}<esc>kf)i
-                Arpeggio inoremap cl console.log("");<c-o>F"
-                Arpeggio nnoremap gö viwyoconsole.log("<c-r>0", <c-r>0);<esc>
-                Arpeggio vnoremap gö yoconsole.log("<c-r>0", <c-r>0);<esc>
-                Arpeggio inoremap iew import {}<c-o>mb from "";<left><left>
+                Arpeggio inoremap fa ()<c-o>mb => {<cr>}<c-o>O
 
-                Arpeggio inoremap ij ===<space>
-                Arpeggio inoremap in !==<space>
+                Arpeggio inoremap ie ===<space>
+                Arpeggio inoremap iw !==<space>
+
+                Arpeggio inoremap g2 ""<left>
+                Arpeggio inoremap g3 ``<left>
+                Arpeggio inoremap g4 $
+                Arpeggio inoremap g8 []<left>
+                Arpeggio inoremap g8 ()<left>
+                Arpeggio inoremap g9 {}<left>
+                Arpeggio inoremap g# ''<left>
             ]]
         end
     },

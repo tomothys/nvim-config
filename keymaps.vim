@@ -33,40 +33,6 @@ nnoremap <silent> go :copen<cr>
 nnoremap <silent> gn :cnext<cr>
 nnoremap <silent> gp :cprev<cr>
 
-" insert mode mappings
-inoremap g0 =
-cnoremap g0 =
-
-inoremap g1 !
-cnoremap g1 !
-
-inoremap g2 ""<left>
-cnoremap g2 ""<left>
-
-inoremap g4 $
-cnoremap g4 $
-
-inoremap g5 []<left>
-cnoremap g5 []<left>
-
-inoremap g8 ()<left>
-cnoremap g8 ()<left>
-
-inoremap g9 {}<left>
-cnoremap g9 {}<left>
-
-inoremap g0 =
-cnoremap g0 =
-
-inoremap g< <><left>
-cnoremap g< <><left>
-
-inoremap g+ ``<left>
-cnoremap g+ ``<left>
-
-inoremap g# ''<left>
-cnoremap g# ''<left>
-
 " normal mode mappings for leader keys
 nnoremap <silent> <leader>w <c-w>
 

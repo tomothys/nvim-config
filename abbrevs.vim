@@ -2,19 +2,18 @@ inoreab k, <c-o>O
 
 " JavaScript abbrevs
 function! JavaScriptAbbrevs()
-    inoreab <buffer> isu, === undefined
-    inoreab <buffer> isnu, !== undefined
-    inoreab <buffer> isn, === null
-    inoreab <buffer> isnn, !== null
-    inoreab <buffer> isf, === false
-
     inoreab <buffer> imp, import {}<c-o>mb from "";<left><left>
 
-    inoreab <buffer> cn, const<space><space>=<space><left><left><left>
+    inoreab <buffer> cn, const<space><space><c-o>mb=<space>
+
+    inoreab <buffer> if, if ()<c-o>mb {<cr>}<c-o>O
+
+    inoreab <buffer> ma, map((item) => {<cr>})<c-o>O
+    inoreab <buffer> fil, filter((item) => {<cr>})<c-o>O
+    inoreab <buffer> re, reduce((acc, item) => {<cr>}, [])<c-o>O
 
     inoreab <buffer> try, try {<cr>} catch(error) {<cr>console.error(error)<cr>}<c-o>2k<c-o>O
 
-    inoreab <buffer> aw, await<space>
     inoreab <buffer> pall, await Promise.all([<cr>])<c-o>O
     inoreab <buffer> pals, await Promise.allSettled([<cr>])<c-o>O
 
@@ -22,7 +21,13 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> ca, <bs>.catch((error) => {<cr>console.error(error);<cr>})<c-o>O
     inoreab <buffer> fi, <bs>.finally(() => {<cr>})<c-o>O
 
+    inoreab <buffer> aw, await<space>
+    inoreab <buffer> fn, function<space>
+    inoreab <buffer> f, false
+    inoreab <buffer> t, true
     inoreab <buffer> r, return
+    inoreab <buffer> n, null
+    inoreab <buffer> u, undefined
 endfunction
 
 augroup javascript_abbrevs
