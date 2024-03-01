@@ -6,11 +6,14 @@ nnoremap <silent> <leader>j :let @/="<c-r><c-w>" \| set hlsearch<cr>
 " Use search register to mark selected part
 vnoremap <silent> <leader>j "zy:let @/="<c-r>z" \| set hlsearch<cr>
 
+" Make using the clipboard a little bit easier/faster
 nnoremap + "+
 vnoremap + "+
 
 " general mappings to make life a little bit more convenient
-nnoremap s :
+nnoremap <c-k> :
+nnoremap <c-f> /
+inoremap <c-f> /
 nnoremap <silent> <esc> :nohl<cr><esc>
 
 " select pasted before
@@ -22,6 +25,13 @@ vnoremap P P`[v`]
 " change behavior of o - stay in normal mode
 nnoremap o o<esc>
 nnoremap O O<esc>
+
+" surround selected text
+vnoremap " c""<esc>"-Pl
+vnoremap ' c''<esc>"-Pl
+vnoremap ( c()<esc>"-Pl
+vnoremap { c{}<esc>"-Pl
+vnoremap [ c[]<esc>"-Pl
 
 " reindent when entering insert mode via i/I
 nnoremap i i<c-f>
@@ -37,8 +47,9 @@ nnoremap <silent> gp :cprev<cr>
 nnoremap <silent> <leader>w <c-w>
 
 " save current buffer
-nnoremap <silent> gw :w<cr>
-nnoremap <silent> gW :wa<cr>
+nnoremap <silent> <c-s> :w<cr>
+nnoremap <silent> <leader>w :w<cr>
+nnoremap <silent> <leader>W :wa<cr>
 
 " insert mode mappings for ctrl+arrow keys
 inoremap <c-l> <right>

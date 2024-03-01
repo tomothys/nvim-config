@@ -7,10 +7,12 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> cn, const<space><space><c-o>mb=<space>
 
     inoreab <buffer> if, if ()<c-o>mb {<cr>}<c-o>O
+    inoreab <buffer> fa, ()<c-o>mb => {<cr>}<c-o>O
+    inoreab <buffer> fm ()<c-o>mb {<cr>}<c-o>O
 
-    inoreab <buffer> ma, map((item) => {<cr>})<c-o>O
-    inoreab <buffer> fil, filter((item) => {<cr>})<c-o>O
-    inoreab <buffer> re, reduce((acc, item) => {<cr>}, [])<c-o>O
+    inoreab <buffer> ma, .map((item) => {<cr>})<c-o>O
+    inoreab <buffer> fil, .filter((item) => {<cr>})<c-o>O
+    inoreab <buffer> re, .reduce((acc, item) => {<cr>}, [])<c-o>O
 
     inoreab <buffer> try, try {<cr>} catch(error) {<cr>console.error(error)<cr>}<c-o>2k<c-o>O
 
@@ -25,9 +27,12 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> fn, function<space>
     inoreab <buffer> f, false
     inoreab <buffer> t, true
-    inoreab <buffer> r, return
+    inoreab <buffer> r, return<space>
     inoreab <buffer> n, null
     inoreab <buffer> u, undefined
+
+    inoreab <buffer> is, ===<space>
+    inoreab <buffer> isn, !==<space>
 endfunction
 
 augroup javascript_abbrevs

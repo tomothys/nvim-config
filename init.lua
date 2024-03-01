@@ -114,6 +114,7 @@ require("lazy").setup({
             })
 
             vim.keymap.set("n", "<leader>e", ":NvimTreeFindFileToggle<cr>", { silent = true })
+            vim.keymap.set("n", "<c-b>", ":NvimTreeFindFileToggle<cr>", { silent = true })
         end
     },
     {
@@ -163,6 +164,7 @@ require("lazy").setup({
             ]]
 
             vim.keymap.set("n", "<leader>p", ":Files<cr>", { silent = true })
+            vim.keymap.set("n", "<c-p>", ":Files<cr>", { silent = true })
         end
     },
     { "mg979/vim-visual-multi" },
@@ -179,7 +181,6 @@ require("lazy").setup({
             vim.keymap.set("n", "<leader>gp", ":Git push<cr>", { noremap = true, silent = true })
             vim.keymap.set("n", "<leader>gP", ":Git pull<cr>", { noremap = true, silent = true })
             vim.keymap.set("n", "<leader>gf", ":Git fetch<cr>", { noremap = true, silent = true })
-            vim.keymap.set("n", "<leader>gc", ":Git commit<cr>", { noremap = true, silent = true })
         end
     },
     {
@@ -202,26 +203,39 @@ require("lazy").setup({
                 " Global chords
                 Arpeggio inoremap fk ,<c-]>
                 Arpeggio inoremap ej <Esc>
-                Arpeggio inoremap jk <esc>O
 
-                Arpeggio inoremap sl /
-                Arpeggio nnoremap sl /
+                Arpeggio vnoremap gh c<><esc>"-Pl
+                Arpeggio vnoremap fj c()<esc>"-Pl
+                Arpeggio vnoremap dk c{}<esc>"-Pl
+                Arpeggio vnoremap ei c[]<esc>"-Pl
+                Arpeggio vnoremap vn c""<esc>"-Pl
+                Arpeggio vnoremap sl c''<esc>"-Pl
+                Arpeggio vnoremap cm c``<esc>"-Pl
+
+                Arpeggio nnoremap g4 $
+                Arpeggio vnoremap g4 $
+
                 Arpeggio inoremap bl \
-                Arpeggio inoremap gh <><left>
-
-                Arpeggio inoremap fm ()<c-o>mb {<cr>}<c-o>O
-                Arpeggio inoremap fa ()<c-o>mb => {<cr>}<c-o>O
-
-                Arpeggio inoremap ie ===<space>
-                Arpeggio inoremap iw !==<space>
-
-                Arpeggio inoremap g2 ""<left>
-                Arpeggio inoremap g3 ``<left>
                 Arpeggio inoremap g4 $
-                Arpeggio inoremap g8 []<left>
-                Arpeggio inoremap g8 ()<left>
-                Arpeggio inoremap g9 {}<left>
-                Arpeggio inoremap g# ''<left>
+                Arpeggio inoremap g5 %
+
+                Arpeggio cnoremap g5 %
+
+                Arpeggio inoremap gh <><left>
+                Arpeggio inoremap fj ()<left>
+                Arpeggio inoremap dk {}<left>
+                Arpeggio inoremap ei []<left>
+                Arpeggio inoremap vn ""<left>
+                Arpeggio inoremap sl ''<left>
+                Arpeggio inoremap cm ``<left>
+
+                Arpeggio cnoremap gh <><left>
+                Arpeggio cnoremap fj ()<left>
+                Arpeggio cnoremap dk {}<left>
+                Arpeggio cnoremap ei []<left>
+                Arpeggio cnoremap vn ""<left>
+                Arpeggio cnoremap sl ''<left>
+                Arpeggio cnoremap cm ``<left>
             ]]
         end
     },
