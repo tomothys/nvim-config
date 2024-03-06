@@ -117,41 +117,98 @@ require("lazy").setup({
             vim.keymap.set("n", "<c-b>", ":NvimTreeFindFileToggle<cr>", { silent = true })
         end
     },
-    {
-        "neoclide/coc.nvim",
+    { "williamboman/mason.nvim" },
+    { "williamboman/mason-lspconfig.nvim" },
+    { 
+        "neovim/nvim-lspconfig",
+        dependencies = { "williamboman/mason.nvim",  "williamboman/mason-lspconfig.nvim"  },
         config = function()
-            -- Some servers have issues with backup files, see #649
-            vim.opt.backup = false
-            vim.opt.writebackup = false
+            require("mason").setup()
+            require("mason-lspconfig").setup()
 
-            -- Use K to show documentation in preview window
-            function _G.show_docs()
-                local cw = vim.fn.expand('<cword>')
-                if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
-                    vim.api.nvim_command('h ' .. cw)
-                elseif vim.api.nvim_eval('coc#rpc#ready()') then
-                    vim.fn.CocActionAsync('doHover')
-                else
-                    vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+            require("mason-lspconfig").setup_handlers {
+                -- The first entry (without a key) will be the default handler
+                -- and will be called for each installed server that doesn't have
+                -- a dedicated handler.
+                function (server_name) -- default handler (optional)
+                    require("lspconfig")[server_name].setup {}
+                end,
+                -- Next, you can provide a dedicated handler for specific servers.
+                -- For example, a handler override for the `rust_analyzer`:
+                -- ["rust_analyzer"] = function ()
+                --     require("rust-tools").setup {}
+                -- end
+            }
+
+            -- Global mappings.
+            -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+            vim.keymap.set('n', 'ge', vim.diagnostic.open_float)
+            vim.keymap.set('n', 'gE', function()
+                vim.diagnostic.setqflist()
+
+                vim.cmd("copen")
+            end)
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+                callback = function(ev)
+                    -- Enable completion triggered by <c-x><c-o>
+                    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+                    -- Buffer local mappings.
+                    -- See `:help vim.lsp.*` for documentation on any of the below functions
+                    local opts = { buffer = ev.buf }
+                    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+                    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+                    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+                    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+                    vim.keymap.set('i', '<c-s>', vim.lsp.buf.signature_help, opts)
+                    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
+                    vim.keymap.set('n', 'gr', vim.lsp.buf.rename, opts)
+                    vim.keymap.set({ 'n', 'v' }, 'ga', vim.lsp.buf.code_action, opts)
+                    vim.keymap.set('n', 'gR', vim.lsp.buf.references, opts)
+                    vim.keymap.set('n', 'gF', function()
+                        vim.lsp.buf.format { async = true }
+                    end, opts)
                 end
-            end
-
-            vim.keymap.set("n", "gh", '<CMD>lua _G.show_docs()<CR>', { silent = true })
-
-            vim.keymap.set("n", "ge", "", { silent = true, expr = true, noremap = true })
-            vim.keymap.set("n", "gr", "<Plug>(coc-rename)", { silent = true, noremap = true })
-            vim.keymap.set("n", "gR", "<plug>(coc-references)", { silent = true, noremap = true })
-            vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, noremap = true })
-            vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", { silent = true, noremap = true })
-
-            vim.keymap.set("i", "<c-j>", [[coc#pum#visible() ? coc#pum#next(1) : coc#refresh()]],
-                { silent = true, noremap = true, expr = true, replace_keycodes = false })
-            vim.keymap.set("i", "<c-k>", [[coc#pum#visible() ? coc#pum#prev(1) : coc#refresh()]],
-                { silent = true, noremap = true, expr = true, replace_keycodes = false })
-            vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]],
-                { silent = true, noremap = true, expr = true, replace_keycodes = false })
+            })
         end
     },
+    -- {
+    --     "neoclide/coc.nvim",
+    --     config = function()
+    --         -- Some servers have issues with backup files, see #649
+    --         vim.opt.backup = false
+    --         vim.opt.writebackup = false
+    --
+    --         -- Use K to show documentation in preview window
+    --         function _G.show_docs()
+    --             local cw = vim.fn.expand('<cword>')
+    --             if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
+    --                 vim.api.nvim_command('h ' .. cw)
+    --             elseif vim.api.nvim_eval('coc#rpc#ready()') then
+    --                 vim.fn.CocActionAsync('doHover')
+    --             else
+    --                 vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+    --             end
+    --         end
+    --
+    --         vim.keymap.set("n", "gh", '<CMD>lua _G.show_docs()<CR>', { silent = true })
+    --
+    --         vim.keymap.set("n", "ge", "", { silent = true, expr = true, noremap = true })
+    --         vim.keymap.set("n", "gr", "<Plug>(coc-rename)", { silent = true, noremap = true })
+    --         vim.keymap.set("n", "gR", "<plug>(coc-references)", { silent = true, noremap = true })
+    --         vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, noremap = true })
+    --         vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", { silent = true, noremap = true })
+    --
+    --         vim.keymap.set("i", "<c-j>", [[coc#pum#visible() ? coc#pum#next(1) : coc#refresh()]],
+    --             { silent = true, noremap = true, expr = true, replace_keycodes = false })
+    --         vim.keymap.set("i", "<c-k>", [[coc#pum#visible() ? coc#pum#prev(1) : coc#refresh()]],
+    --             { silent = true, noremap = true, expr = true, replace_keycodes = false })
+    --         vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]],
+    --             { silent = true, noremap = true, expr = true, replace_keycodes = false })
+    --     end
+    -- },
     {
         "junegunn/fzf.vim",
         dependencies = { "junegunn/fzf" },

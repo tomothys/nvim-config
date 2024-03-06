@@ -48,8 +48,8 @@ nnoremap <silent> <leader>w <c-w>
 
 " save current buffer
 nnoremap <silent> <c-s> :w<cr>
-nnoremap <silent> <leader>w :w<cr>
-nnoremap <silent> <leader>W :wa<cr>
+nnoremap <silent> gw :w<cr>
+nnoremap <silent> gW :wa<cr>
 
 " insert mode mappings for ctrl+arrow keys
 inoremap <c-l> <right>
