@@ -199,10 +199,6 @@ require("lazy").setup({
             vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, noremap = true })
             vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", { silent = true, noremap = true })
 
-            -- vim.keymap.set("i", "<c-j>", [[coc#pum#visible() ? coc#pum#next(1) : coc#refresh()]],
-            --     { silent = true, noremap = true, expr = true, replace_keycodes = false })
-            -- vim.keymap.set("i", "<c-k>", [[coc#pum#visible() ? coc#pum#prev(1) : coc#refresh()]],
-            --     { silent = true, noremap = true, expr = true, replace_keycodes = false })
             vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]],
                 { silent = true, noremap = true, expr = true, replace_keycodes = false })
         end
