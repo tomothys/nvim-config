@@ -31,6 +31,20 @@ M.trim_string = function(str)
     return str:gsub("^%s*(.-)%s*$", "%1")
 end
 
+M.split_string = function(str, delimiter)
+    local sub_str_list = {}
+
+    for sub_str in str:gmatch("[^" .. delimiter .. "]+") do
+        table.insert(sub_str_list, sub_str)
+    end
+
+    return sub_str_list
+end
+
+M.join_strings = function(sub_str_list, delimiter)
+    return table.concat(sub_str_list, delimiter);
+end
+
 M.hide_cursor_line = function()
     local winId = vim.api.nvim_get_current_win()
     vim.api.nvim_win_set_option(winId, 'cursorline', false)
