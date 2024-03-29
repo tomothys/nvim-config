@@ -8,28 +8,32 @@ local function set_syntax_highlighting()
             finish
         end
 
-        syntax match MeowserFirstLine "^  Press.*"
-        highlight link MeowserFirstLine Comment
 
-        syntax match MeowserMarker "^  .:"
-        syntax match MeowserMarker "<esc>"
+        syntax match MeowserFirstLine "^  Press.*$"
+        highlight link MeowserFirstLine Conceal
+
+        syntax match MeowserSpecial /<esc>\|<q>/ containedin=MeowserFirstLine
+        highlight link MeowserSpecial WarningMsg
+
+        syntax match MeowserMarker "^  \S\+:"
         highlight link MeowserMarker WarningMsg
 
         syntax match MeowserFilePath "^  \/.*"
         syntax match MeowserFilePath "^  \\.*"
-        highlight link MeowserFilePath Title
+        highlight link MeowserFilePath Conceal
 
         let b:current_syntax = "meowser"
     ]]
 end
 
 local function show_buffer_markers()
-    local local_marker_names = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "v", "w", "x", "y", "z" }
+    local local_marker_names = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "r",
+        "s", "t", "u", "v", "w", "x", "y", "z" }
 
     local bufnr = vim.api.nvim_create_buf(false, true)
 
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<c-w>c", {noremap = true, silent = true})
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<esc>", "<c-w>c", {noremap = true, silent = true})
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<c-w>c", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<esc>", "<c-w>c", { noremap = true, silent = true })
 
     local meowser_lines = {}
 
@@ -38,7 +42,7 @@ local function show_buffer_markers()
     local local_lines_to_write = {}
 
     for _, marker_name in ipairs(local_marker_names) do
-        vim.keymap.set("n", marker_name, "<Nop>", {buffer = bufnr})
+        vim.keymap.set("n", marker_name, "<Nop>", { buffer = bufnr })
 
         local marker = vim.api.nvim_buf_get_mark(0, marker_name)
 
@@ -52,8 +56,8 @@ local function show_buffer_markers()
 
                 vim.keymap.set("n", marker_name, function()
                     vim.api.nvim_win_close(0, true)
-                    vim.api.nvim_win_set_cursor(0, {marker[1], marker[2]})
-                end, {buffer = bufnr})
+                    vim.api.nvim_win_set_cursor(0, { marker[1], marker[2] })
+                end, { buffer = bufnr })
             end
         end
     end
@@ -66,10 +70,11 @@ local function show_buffer_markers()
         end
     end
 
-    local global_marker_names = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }
+    local global_marker_names = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "R",
+        "S", "T", "U", "V", "W", "X", "Y", "Z" }
 
     for _, global_marker_name in ipairs(global_marker_names) do
-        vim.keymap.set("n", global_marker_name, "<Nop>", {buffer = bufnr})
+        vim.keymap.set("n", global_marker_name, "<Nop>", { buffer = bufnr })
     end
 
     for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
@@ -88,13 +93,14 @@ local function show_buffer_markers()
                     if line == nil then
                         vim.cmd("delmarks " .. global_marker_name)
                     else
-                        table.insert(global_marker_lines_to_write, "  " .. global_marker_name .. ": " .. utils.trim_string(line))
+                        table.insert(global_marker_lines_to_write,
+                            "  " .. global_marker_name .. ": " .. utils.trim_string(line))
 
                         vim.keymap.set("n", "<s-" .. global_marker_name .. ">", function()
                             vim.api.nvim_win_close(0, true)
                             vim.api.nvim_set_current_buf(buffer)
-                            vim.api.nvim_win_set_cursor(0, {global_marker[1], global_marker[2]})
-                        end, {buffer = bufnr})
+                            vim.api.nvim_win_set_cursor(0, { global_marker[1], global_marker[2] })
+                        end, { buffer = bufnr })
                     end
                 end
             end
@@ -110,7 +116,7 @@ local function show_buffer_markers()
     table.insert(meowser_lines, "")
 
     for _, line in ipairs(meowser_lines) do
-        vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, {line})
+        vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { line })
     end
 
     utils.create_floating_window(bufnr, " Meowser ")
@@ -119,7 +125,7 @@ local function show_buffer_markers()
 end
 
 M.setup = function()
-    vim.keymap.set({"n", "v"}, "gm", show_buffer_markers)
+    vim.keymap.set({ "n", "v" }, "gm", show_buffer_markers)
 end
 
 return M
