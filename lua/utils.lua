@@ -4,7 +4,7 @@ M.create_floating_window = function(bufnr, title)
     local width = 0
 
     for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
-        if #line > width then
+        if #line + 2 > width then
             width = #line + 2
         end
     end
@@ -25,6 +25,45 @@ M.create_floating_window = function(bufnr, title)
     vim.api.nvim_win_set_option(winId, "wrap", false)
 
     return winId
+end
+
+M.reset_floating_windows_size = function(win_id)
+    local bufnr = vim.api.nvim_win_get_buf(win_id)
+
+    local width = 0
+
+    for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+        if #line + 2 > width then
+            width = #line + 2
+        end
+    end
+
+    local height = vim.api.nvim_buf_line_count(bufnr)
+
+    vim.api.nvim_win_set_config(win_id, {
+        width = width,
+        height = height,
+    })
+end
+
+M.array_contains = function(array, val)
+    for _, table_val in ipairs(array) do
+        if table_val == val then
+            return true
+        end
+    end
+
+    return false
+end
+
+M.get_table_length = function(table)
+    local count = 0
+
+    for _ in pairs(table) do
+        count = count + 1
+    end
+
+    return count
 end
 
 M.trim_string = function(str)

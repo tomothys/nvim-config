@@ -2,19 +2,23 @@ local utils = require("utils")
 
 local M = {}
 
+
+
+
+
 local function set_syntax_highlighting()
     vim.cmd [[
         if exists("b:current_syntax")
             finish
         end
 
-        syntax match MeowserFirstLine "^  Press.*$"
-        highlight link MeowserFirstLine Conceal
+        syntax match MeowserLine "^.*$"
+        highlight link MeowserLine Conceal
 
-        syntax match MeowserSpecial /<esc>\|<q>/ containedin=MeowserFirstLine
+        syntax match MeowserSpecial /<esc>\|<q>/ containedin=MeowserLine
         highlight link MeowserSpecial WarningMsg
 
-        syntax match BowserBufNr "^  \S\+:"
+        syntax match BowserBufNr "^  \S\+\ze:" containedin=MeowserLine
         highlight link BowserBufNr Comment
 
         syntax match BowserFileName " \S\+ "
@@ -27,78 +31,33 @@ local function set_syntax_highlighting()
     ]]
 end
 
-local function set_next_lines(bufnr, lines)
-    vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, lines)
-end
 
-local function clear_buf_keymap(bufnr)
-    local key_list = { "a", "b", "c", "d", "e", "f", "i", "m", "n", "o", "p", "r", "s", "t",
-        "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
-        "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "<space>", "<cr>", "<bs>", "<esc>" }
 
-    for _, key in ipairs(key_list) do
-        vim.keymap.set("n", key, "<Nop>", { buffer = bufnr, silent = true })
-    end
-end
+
+
 
 local INDEX_PREFIX = "index_"
 local index_to_buf_nr_map = {}
 
 local current_win_id = nil
+local bowser_bufnr = nil
 local bowser_win_id = nil
 
-local function choose_buffer(pressed_nr)
-    local index = vim.fn.input("BufNr: ", pressed_nr)
 
-    if index_to_buf_nr_map[INDEX_PREFIX .. index] == nil then
-        print("Bowser Error: Buffer not found")
-        return
-    end
 
-    if current_win_id == nil then
-        print("Bowser Error: Window not found")
-        return
-    end
 
-    if bowser_win_id == nil then
-        print("Bowser Error: Bowser Window not found")
-        return
-    end
 
-    vim.api.nvim_win_set_buf(current_win_id, index_to_buf_nr_map[INDEX_PREFIX .. index])
-    vim.api.nvim_win_close(bowser_win_id, false)
+
+local function set_next_lines(bufnr, lines)
+    vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, lines)
 end
 
-local function show_buffer_list()
-    current_win_id = vim.api.nvim_get_current_win()
 
-    local bufnr = vim.api.nvim_create_buf(false, true)
 
-    clear_buf_keymap(bufnr)
-    vim.keymap.set("n", "q", "<c-w>c", { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "<esc>", "<c-w>c", { buffer = bufnr, noremap = true, silent = true })
 
-    vim.keymap.set("n", "1", function() choose_buffer('1') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "2", function() choose_buffer('2') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "3", function() choose_buffer('3') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "4", function() choose_buffer('4') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "4", function() choose_buffer('4') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "5", function() choose_buffer('5') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "6", function() choose_buffer('6') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "7", function() choose_buffer('7') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "8", function() choose_buffer('8') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
-    vim.keymap.set("n", "9", function() choose_buffer('9') end,
-        { buffer = bufnr, noremap = true, silent = true, expr = true })
 
+
+local function render_buffer_list(bufnr)
     set_next_lines(bufnr, { "  Press <q> or <esc> to close bowser", "" })
 
     local buffers = vim.fn.getbufinfo({ buflisted = true })
@@ -123,14 +82,220 @@ local function show_buffer_list()
     end
 
     set_next_lines(bufnr, buf_names)
-
-    bowser_win_id = utils.create_floating_window(bufnr, " Bowser ")
-    set_syntax_highlighting()
-    utils.hide_cursor_line()
 end
 
+
+
+
+
+
+
+local function clear_buffer(bufnr)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
+end
+
+
+
+
+
+
+
+local function clear_buf_keymap(bufnr)
+    local key_list = { "a", "b", "c", "d", "e", "f", "h", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t",
+        "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+        "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "<space>", "<cr>", "<bs>", "<esc>" }
+
+    for _, key in ipairs(key_list) do
+        vim.keymap.set("n", key, "<Nop>", { buffer = bufnr, silent = true })
+    end
+end
+
+
+
+
+
+
+local function open_buffer(index)
+    if index_to_buf_nr_map[INDEX_PREFIX .. index] == nil then
+        print("Bowser Error: Buffer not found")
+        return nil
+    end
+
+    if vim.api.nvim_win_is_valid(current_win_id) == false then
+        current_win_id = vim.api.nvim_list_wins()[1]
+    end
+
+    if bowser_win_id == nil then
+        print("Bowser Error: Bowser Window not found")
+        return nil
+    end
+
+    local bufnr = index_to_buf_nr_map[INDEX_PREFIX .. index]
+
+    vim.api.nvim_win_set_buf(current_win_id, bufnr)
+    vim.api.nvim_win_close(bowser_win_id, false)
+end
+
+
+
+
+
+
+local function close_buffer(index)
+    if utils.get_table_length(index_to_buf_nr_map) == 0 then
+        return
+    end
+
+    local bufnr = index_to_buf_nr_map[INDEX_PREFIX .. index]
+
+    if bufnr == nil then
+        print("Bowser Error: Buffer not found")
+        return
+    end
+
+    local win_ids = vim.api.nvim_list_wins()
+
+    local loaded_bufnr = {}
+
+    for _, win in ipairs(win_ids) do
+        table.insert(loaded_bufnr, vim.api.nvim_win_get_buf(win))
+    end
+
+    if utils.array_contains(loaded_bufnr, bufnr) then
+        -- vim.api.nvim_buf_delete(bufnr, { force = true }) -- this does nothing :(
+        vim.api.nvim_buf_call(bufnr, function() vim.cmd(":bwipeout!") end)
+    else
+        vim.api.nvim_buf_delete(bufnr, {})
+    end
+end
+
+
+
+
+
+
+
+local function choose_buffer(pressed_nr)
+    local index = vim.fn.input("BufNr: ", pressed_nr)
+
+    open_buffer(index)
+end
+
+
+
+
+
+
+
+local function get_index_of_line(line)
+    local possible_index = utils.split_string(line, ":")[1]
+
+    local index = utils.trim_string(possible_index)
+
+    if index == "" then
+        print("Bowser Error: Index required")
+        return nil
+    end
+
+    return index
+end
+
+
+
+
+
+
+local function set_keymaps(bufnr)
+    clear_buf_keymap(bufnr)
+
+    local close_win = function()
+        vim.api.nvim_win_close(bowser_win_id, false)
+    end
+
+    vim.keymap.set("n", "q", close_win, { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "<esc>", close_win, { buffer = bufnr, noremap = true, silent = true })
+
+    local jump_next = function()
+        vim.fn.search(" \\d\\+:")
+    end
+
+    vim.keymap.set("n", "j", jump_next, { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "<c-n>", jump_next, { buffer = bufnr, noremap = true, silent = true })
+
+    local jump_prev = function()
+        vim.fn.search(" \\d\\+:", "b")
+    end
+
+    vim.keymap.set("n", "k", jump_prev, { buffer = bufnr, noremap = true, silent = true })
+
+    local close_buf = function()
+        local index = get_index_of_line(vim.api.nvim_get_current_line())
+        local current_cursor_pos = vim.api.nvim_win_get_cursor(bowser_win_id)
+
+        close_buffer(index)
+
+        print(vim.inspect(current_cursor_pos))
+
+        clear_buffer(bufnr)
+        render_buffer_list(bufnr)
+
+        utils.reset_floating_windows_size(bowser_win_id)
+
+        vim.api.nvim_win_set_cursor(bowser_win_id, { current_cursor_pos[1] - 1, 0 })
+        vim.fn.search(" \\d\\+:")
+    end
+
+    vim.keymap.set("n", "<bs>", close_buf, { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "x", close_buf, { buffer = bufnr, noremap = true, silent = true })
+
+    local open = function()
+        local index = get_index_of_line(vim.api.nvim_get_current_line())
+        open_buffer(index)
+    end
+
+    vim.keymap.set("n", "o", open, { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "<cr>", open, { buffer = bufnr, noremap = true, silent = true })
+
+    vim.keymap.set("n", "1", function() choose_buffer('1') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "2", function() choose_buffer('2') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "3", function() choose_buffer('3') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "4", function() choose_buffer('4') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "4", function() choose_buffer('4') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "5", function() choose_buffer('5') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "6", function() choose_buffer('6') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "7", function() choose_buffer('7') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "8", function() choose_buffer('8') end,
+        { buffer = bufnr, noremap = true, silent = true })
+    vim.keymap.set("n", "9", function() choose_buffer('9') end,
+        { buffer = bufnr, noremap = true, silent = true })
+end
+
+
+
+
+
+
+
 M.setup = function()
-    vim.keymap.set({ "n" }, "<leader>b", show_buffer_list)
+    vim.keymap.set({ "n" }, "<leader>b", function()
+        current_win_id = vim.api.nvim_get_current_win()
+
+        bowser_bufnr = vim.api.nvim_create_buf(false, true)
+        render_buffer_list(bowser_bufnr)
+
+        bowser_win_id = utils.create_floating_window(bowser_bufnr, " Bowser ")
+        vim.fn.search(" \\d\\+:")
+        set_syntax_highlighting()
+        set_keymaps(bowser_bufnr)
+    end)
 end
 
 return M
