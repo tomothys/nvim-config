@@ -11,6 +11,7 @@ vim.cmd [[
 -- Initilize own plugins
 -- require("own-plugins.git-blame").setup()
 require("own-plugins.meowser").setup()
+require("own-plugins.bowser").setup()
 
 -- INSTALL LAZY.NVIM IF NOT INSTALLED [BEGIN]
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
