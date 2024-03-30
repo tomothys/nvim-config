@@ -5,7 +5,6 @@ vim.cmd [[
     source $HOME/.config/nvim/keymaps.vim
     source $HOME/.config/nvim/statusbar.vim
     source $HOME/.config/nvim/windowbar.vim
-    " source $HOME/.config/nvim/bufferbar.vim
 ]]
 
 -- Initilize own plugins
