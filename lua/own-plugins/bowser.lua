@@ -234,8 +234,6 @@ local function set_keymaps(bufnr)
 
         close_buffer(index)
 
-        print(vim.inspect(current_cursor_pos))
-
         clear_buffer(bufnr)
         render_buffer_list(bufnr)
 

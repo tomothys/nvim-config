@@ -5,13 +5,14 @@ vim.cmd [[
     source $HOME/.config/nvim/keymaps.vim
     source $HOME/.config/nvim/statusbar.vim
     source $HOME/.config/nvim/windowbar.vim
-    source $HOME/.config/nvim/bufferbar.vim
+    " source $HOME/.config/nvim/bufferbar.vim
 ]]
 
 -- Initilize own plugins
 -- require("own-plugins.git-blame").setup()
 require("own-plugins.meowser").setup()
 require("own-plugins.bowser").setup()
+require("own-plugins.buf-bowser").setup()
 
 -- INSTALL LAZY.NVIM IF NOT INSTALLED [BEGIN]
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
