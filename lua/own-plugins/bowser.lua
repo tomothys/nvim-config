@@ -12,20 +12,23 @@ local function set_syntax_highlighting()
             finish
         end
 
-        syntax match MeowserLine "^.*$"
-        highlight link MeowserLine Conceal
+        syntax match BowserLine /^.*$/
+        highlight BowserLine guifg=#737aa2
 
-        syntax match MeowserSpecial /<esc>\|<q>/ containedin=MeowserLine
-        highlight link MeowserSpecial WarningMsg
+        syntax match BowserSpecial /<esc>\|<q>/ containedin=BowserLine
+        highlight BowserSpecial guifg=#e0af68
 
-        syntax match BowserBufNr "^  \S\+\ze:" containedin=MeowserLine
-        highlight link BowserBufNr Comment
+        syntax match BowserBufNr /^\s\+\d\+/ containedin=BowserLine
+        highlight link BowserBufNr BowserSpecial
 
-        syntax match BowserFileName " \S\+ "
-        highlight link BowserFileName Directory
+        syntax match BowserFileName / \zs\S\+\ze/
+        highlight BowserFileName guifg=#7aa2f7
 
-        syntax match BowserFilePath "- \S\+$"
-        highlight link BowserFilePath Conceal
+        syntax match BowserColumn /:/
+        highlight link BowserColumn BowserLine
+
+        syntax match BowserFilePath /-.*$/
+        highlight BowserFilePath guifg=#737aa2
 
         let b:current_syntax = "bowser"
     ]]
@@ -37,7 +40,10 @@ end
 
 
 local INDEX_PREFIX = "index_"
+local BUFFER_PREFIX = "buffer_"
+
 local index_to_buf_nr_map = {}
+local buf_nr_to_index_map = {}
 
 local current_win_id = nil
 local bowser_bufnr = nil
@@ -65,10 +71,17 @@ local function render_buffer_list(bufnr)
     local buf_names = {}
 
     for i, buf in ipairs(buffers) do
-        if #buf.name ~= 0 then
-            index_to_buf_nr_map[INDEX_PREFIX .. i] = buf.bufnr
+        index_to_buf_nr_map[INDEX_PREFIX .. i] = buf.bufnr
+        buf_nr_to_index_map[BUFFER_PREFIX .. buf.bufnr] = i
 
-            local split_path_list = utils.split_string(buf.name, "/")
+        local name = buf.name
+
+        if #name == 0 then
+            name = "[No_Name]"
+
+            table.insert(buf_names, "  " .. i .. ": " .. name)
+        else
+            local split_path_list = utils.split_string(name, "/")
 
             local filename = table.remove(split_path_list, #split_path_list)
             local path = table.concat(split_path_list, "/")
@@ -163,22 +176,10 @@ local function close_buffer(index)
 
     if utils.array_contains(loaded_bufnr, bufnr) then
         -- vim.api.nvim_buf_delete(bufnr, { force = true }) -- this does nothing :(
-        vim.api.nvim_buf_call(bufnr, function() vim.cmd(":bwipeout!") end)
+        vim.api.nvim_buf_call(bufnr, function() vim.cmd("bwipeout!") end)
     else
         vim.api.nvim_buf_delete(bufnr, {})
     end
-end
-
-
-
-
-
-
-
-local function choose_buffer(pressed_nr)
-    local index = vim.fn.input("BufNr: ", pressed_nr)
-
-    open_buffer(index)
 end
 
 
@@ -216,14 +217,14 @@ local function set_keymaps(bufnr)
     vim.keymap.set("n", "<esc>", close_win, { buffer = bufnr, noremap = true, silent = true })
 
     local jump_next = function()
-        vim.fn.search(" \\d\\+:")
+        vim.fn.search("  \\d\\+:", "W")
     end
 
     vim.keymap.set("n", "j", jump_next, { buffer = bufnr, noremap = true, silent = true })
     vim.keymap.set("n", "<c-n>", jump_next, { buffer = bufnr, noremap = true, silent = true })
 
     local jump_prev = function()
-        vim.fn.search(" \\d\\+:", "b")
+        vim.fn.search("  \\d\\+:", "bW")
     end
 
     vim.keymap.set("n", "k", jump_prev, { buffer = bufnr, noremap = true, silent = true })
@@ -240,7 +241,7 @@ local function set_keymaps(bufnr)
         utils.reset_floating_windows_size(bowser_win_id)
 
         vim.api.nvim_win_set_cursor(bowser_win_id, { current_cursor_pos[1] - 1, 0 })
-        vim.fn.search(" \\d\\+:")
+        jump_next()
     end
 
     vim.keymap.set("n", "<bs>", close_buf, { buffer = bufnr, noremap = true, silent = true })
@@ -253,27 +254,6 @@ local function set_keymaps(bufnr)
 
     vim.keymap.set("n", "o", open, { buffer = bufnr, noremap = true, silent = true })
     vim.keymap.set("n", "<cr>", open, { buffer = bufnr, noremap = true, silent = true })
-
-    vim.keymap.set("n", "1", function() choose_buffer('1') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "2", function() choose_buffer('2') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "3", function() choose_buffer('3') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "4", function() choose_buffer('4') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "4", function() choose_buffer('4') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "5", function() choose_buffer('5') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "6", function() choose_buffer('6') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "7", function() choose_buffer('7') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "8", function() choose_buffer('8') end,
-        { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "9", function() choose_buffer('9') end,
-        { buffer = bufnr, noremap = true, silent = true })
 end
 
 
@@ -282,15 +262,24 @@ end
 
 
 
-M.setup = function()
-    vim.keymap.set({ "n" }, "<leader>b", function()
+M.setup = function(options)
+    local trigger = options.trigger or "<leader>b"
+
+    vim.keymap.set({ "n" }, trigger, function()
         current_win_id = vim.api.nvim_get_current_win()
 
         bowser_bufnr = vim.api.nvim_create_buf(false, true)
         render_buffer_list(bowser_bufnr)
 
         bowser_win_id = utils.create_floating_window(bowser_bufnr, " Bowser ")
-        vim.fn.search(" \\d\\+:")
+        vim.o.cursorline = true
+
+        local current_buf_index = buf_nr_to_index_map[BUFFER_PREFIX .. vim.api.nvim_win_get_buf(current_win_id)]
+
+        if current_buf_index ~= nil then
+            vim.fn.search("  " .. current_buf_index .. ":")
+        end
+
         set_syntax_highlighting()
         set_keymaps(bowser_bufnr)
     end)

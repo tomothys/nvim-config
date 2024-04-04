@@ -32,7 +32,7 @@ local get_bufferbar_str = function()
     local str = ""
 
     for i, buf in ipairs(vim.fn.getbufinfo({ buflisted = true })) do
-        local name = "[No Name]"
+        local name = "[No_Name]"
 
         if buf.name ~= "" then
             local split_name = utils.split_string(buf.name, "/")

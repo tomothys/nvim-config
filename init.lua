@@ -10,7 +10,7 @@ vim.cmd [[
 -- Initilize own plugins
 -- require("own-plugins.git-blame").setup()
 require("own-plugins.meowser").setup()
-require("own-plugins.bowser").setup()
+require("own-plugins.bowser").setup({ trigger = "<leader>b" })
 require("own-plugins.buf-bowser").setup()
 
 -- INSTALL LAZY.NVIM IF NOT INSTALLED [BEGIN]
