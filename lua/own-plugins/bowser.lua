@@ -190,6 +190,7 @@ local function set_keymaps(bufnr)
 
         vim.api.nvim_win_set_cursor(bowser_win_id, { current_cursor_pos[1] - 1, 0 })
         jump_next()
+        vim.o.cursorline = true
     end
 
     vim.keymap.set("n", "<bs>", close_buf, { buffer = bufnr, noremap = true, silent = true })
