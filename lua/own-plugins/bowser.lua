@@ -2,10 +2,6 @@ local utils = require("utils")
 
 local M = {}
 
-
-
-
-
 local function set_syntax_highlighting()
     vim.cmd [[
         if exists("b:current_syntax")
@@ -34,11 +30,6 @@ local function set_syntax_highlighting()
     ]]
 end
 
-
-
-
-
-
 local INDEX_PREFIX = "index_"
 local BUFFER_PREFIX = "buffer_"
 
@@ -49,19 +40,9 @@ local current_win_id = nil
 local bowser_bufnr = nil
 local bowser_win_id = nil
 
-
-
-
-
-
 local function set_next_lines(bufnr, lines)
     vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, lines)
 end
-
-
-
-
-
 
 local function render_buffer_list(bufnr)
     set_next_lines(bufnr, { "  Press <q> or <esc> to close bowser", "" })
@@ -97,21 +78,9 @@ local function render_buffer_list(bufnr)
     set_next_lines(bufnr, buf_names)
 end
 
-
-
-
-
-
-
 local function clear_buffer(bufnr)
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
 end
-
-
-
-
-
-
 
 local function clear_buf_keymap(bufnr)
     local key_list = { "a", "b", "c", "d", "e", "f", "h", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t",
@@ -122,11 +91,6 @@ local function clear_buf_keymap(bufnr)
         vim.keymap.set("n", key, "<Nop>", { buffer = bufnr, silent = true })
     end
 end
-
-
-
-
-
 
 local function open_buffer(index)
     if index_to_buf_nr_map[INDEX_PREFIX .. index] == nil then
@@ -148,11 +112,6 @@ local function open_buffer(index)
     vim.api.nvim_win_set_buf(current_win_id, bufnr)
     vim.api.nvim_win_close(bowser_win_id, false)
 end
-
-
-
-
-
 
 local function close_buffer(index)
     if utils.get_table_length(index_to_buf_nr_map) == 0 then
@@ -182,12 +141,6 @@ local function close_buffer(index)
     end
 end
 
-
-
-
-
-
-
 local function get_index_of_line(line)
     local possible_index = utils.split_string(line, ":")[1]
 
@@ -200,11 +153,6 @@ local function get_index_of_line(line)
 
     return index
 end
-
-
-
-
-
 
 local function set_keymaps(bufnr)
     clear_buf_keymap(bufnr)
@@ -255,12 +203,6 @@ local function set_keymaps(bufnr)
     vim.keymap.set("n", "o", open, { buffer = bufnr, noremap = true, silent = true })
     vim.keymap.set("n", "<cr>", open, { buffer = bufnr, noremap = true, silent = true })
 end
-
-
-
-
-
-
 
 M.setup = function(options)
     local trigger = options.trigger or "<leader>b"
