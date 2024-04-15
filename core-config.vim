@@ -2,7 +2,13 @@ set encoding=utf-8
 set fileencoding=utf-8
 
 set wildmenu
-set wildignore+=node_modules/**
+set wildignore+=node_modules/**,.git/**,infrastructure/**
+set wildignorecase
+set wildmode=longest:full,full
+set path+=./**
+
+set foldmethod=marker
+set foldmarker=#region,#endregion
 
 set signcolumn=yes
 set number
