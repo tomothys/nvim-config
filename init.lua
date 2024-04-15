@@ -33,44 +33,66 @@ vim.opt.rtp:prepend(lazypath)
 -- LAZY.NVIM [BEGIN]
 require("lazy").setup({
     {
-        "folke/tokyonight.nvim",
-        lazy = false,    -- make sure we load this during startup if it is your main colorscheme
-        priority = 1000, -- make sure to load this before all the other start plugins
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000,
         config = function()
             vim.cmd [[
-                colorscheme tokyonight
+                colorscheme catppuccin
 
                 highlight! @text.uri gui=NONE
-                highlight! link Comment StatusLineNC
 
-                highlight LineNr gui=bold guibg=#373640 guifg=#7aa2f7
-                highlight! link CursorLineNr LineNr
-                highlight LineNrAbove guibg=#373640 guifg=#db4b4b
-                highlight LineNrBelow guibg=#373640 guifg=#9ece6a
+                highlight Winbar gui=bold guibg=#9ece6a guifg=#000000
+                highlight WinbarNC guibg=#181825 guifg=#ffffff
+                highlight TablineFill guibg=#181825 guifg=#ffffff
+                highlight TablineSel gui=bold guibg=#9ece6a guifg=#000000
 
-                highlight StatusLine gui=bold guifg=#000000 guibg=#e0af68
-                highlight StatusLineNC guifg=#e0af68 guibg=#373640
-                highlight! link Winbar StatusLine
-                highlight! link WinbarNC StatusLineNC
-                highlight! link TablineFill StatusLineNC
-                highlight! link TablineSel StatusLine
+                highlight! link StatusLine Winbar
+                highlight! link StatusLineNC WinbarNC
 
-                highlight SignColumn guibg=#373640
-                highlight DiagnosticSignError guifg=#db4b4b guibg=#373640
-                highlight DiagnosticSignWarn guifg=#e0af68 guibg=#373640
-                highlight DiagnosticSignInfo guifg=#0db9d7 guibg=#373640
-                highlight DiagnosticSignHint guifg=#1abc9c guibg=#373640
-                highlight DiagnosticSignOk ctermfg=10 guifg=LightGreen guibg=#373640
-                highlight GitSignsAdd guibg=#373640
-                highlight GitSignsChange guibg=#373640
-                highlight GitSignsDelete guibg=#373640
-
-                highlight NormalFloat guifg=#c0caf5 guibg=#373640
-                highlight! link FloatBorder StatusLineNC
-                highlight! link FloatTitle FloatBorder
+                highlight FloatTitle guifg=#89b4fa
             ]]
         end,
     },
+    -- {
+    --     "folke/tokyonight.nvim",
+    --     lazy = false,    -- make sure we load this during startup if it is your main colorscheme
+    --     priority = 1000, -- make sure to load this before all the other start plugins
+    --     config = function()
+    --         vim.cmd [[
+    --             colorscheme tokyonight
+    --
+    --             highlight! @text.uri gui=NONE
+    --             highlight! link Comment StatusLineNC
+    --
+    --             highlight LineNr gui=bold guibg=#373640 guifg=#7aa2f7
+    --             highlight! link CursorLineNr LineNr
+    --             highlight LineNrAbove guibg=#373640 guifg=#db4b4b
+    --             highlight LineNrBelow guibg=#373640 guifg=#9ece6a
+    --
+    --             highlight StatusLine gui=bold guifg=#000000 guibg=#e0af68
+    --             highlight StatusLineNC guifg=#e0af68 guibg=#373640
+    --             highlight! link Winbar StatusLine
+    --             highlight! link WinbarNC StatusLineNC
+    --             highlight! link TablineFill StatusLineNC
+    --             highlight! link TablineSel StatusLine
+    --
+    --             highlight SignColumn guibg=#373640
+    --             highlight DiagnosticSignError guifg=#db4b4b guibg=#373640
+    --             highlight DiagnosticSignWarn guifg=#e0af68 guibg=#373640
+    --             highlight DiagnosticSignInfo guifg=#0db9d7 guibg=#373640
+    --             highlight DiagnosticSignHint guifg=#1abc9c guibg=#373640
+    --             highlight DiagnosticSignOk ctermfg=10 guifg=LightGreen guibg=#373640
+    --             highlight GitSignsAdd guibg=#373640
+    --             highlight GitSignsChange guibg=#373640
+    --             highlight GitSignsDelete guibg=#373640
+    --
+    --             highlight NormalFloat guifg=#c0caf5 guibg=#373640
+    --             highlight! link FloatBorder StatusLineNC
+    --             highlight! link FloatTitle FloatBorder
+    --         ]]
+    --     end,
+    -- },
     {
         lazy = false,
         priority = 999,
