@@ -139,6 +139,9 @@ local function close_buffer(index)
     else
         vim.api.nvim_buf_delete(bufnr, {})
     end
+
+    index_to_buf_nr_map[INDEX_PREFIX .. index] = nil
+    buf_nr_to_index_map[BUFFER_PREFIX .. bufnr] = nil
 end
 
 local function get_index_of_line(line)
