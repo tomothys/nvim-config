@@ -7,12 +7,16 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> cn, const<space><space><c-o>mb=<space>
 
     inoreab <buffer> if, if ()<c-o>mb {<cr>}<c-o>O
+    inoreab <buffer> el, <esc>/}<cr>a<space>else {<cr>}<c-o>O
+    inoreab <buffer> elif, <esc>/}<cr>a<space>else if ()<c-o>mb {<cr>}<c-o>O
     inoreab <buffer> fa, ()<c-o>mb => {<cr>}<c-o>O
-    inoreab <buffer> fm ()<c-o>mb {<cr>}<c-o>O
+    inoreab <buffer> fm, ()<c-o>mb {<cr>}<c-o>O
 
-    inoreab <buffer> ma, .map((item) => {<cr>})<c-o>O
-    inoreab <buffer> fil, .filter((item) => {<cr>})<c-o>O
-    inoreab <buffer> re, .reduce((acc, item) => {<cr>}, [])<c-o>O
+    inoreab <buffer> ma, <bs>.map((item) => {<cr>})<c-o>O
+    inoreab <buffer> so, <bs>.sort(([item_a, item_b]) => {<cr>})<c-o>O
+    inoreab <buffer> fil, <bs>.filter((item) => {<cr>})<c-o>O
+    inoreab <buffer> re, <bs>.reduce((acc, item) => {<cr>}, [])<c-o>O
+    inoreab <buffer> foe, <bs>.forEach((item) => {<cr>})<c-o>O
 
     inoreab <buffer> try, try {<cr>} catch(error) {<cr>console.error(error)<cr>}<c-o>2k<c-o>O
 
