@@ -30,10 +30,6 @@ vnoremap ( c()<esc>"-Pl
 vnoremap { c{}<esc>"-Pl
 vnoremap [ c[]<esc>"-Pl
 
-" reindent when entering insert mode via i/I
-nnoremap i i<c-f>
-nnoremap I I<c-f>
-
 " quickfix list
 nnoremap <silent> gl :cclose<cr>
 nnoremap <silent> go :copen<cr>
@@ -45,8 +41,6 @@ nnoremap <silent> <leader>w <c-w>
 
 " save current buffer
 nnoremap <silent> <c-s> :w<cr>
-nnoremap <silent> gw :w<cr>
-nnoremap <silent> gW :wa<cr>
 
 " insert mode mappings for ctrl+arrow keys
 inoremap <c-l> <right>
@@ -62,6 +56,9 @@ nnoremap <expr> k v:count > 1 ? "m'" . v:count . 'k' : 'k'
 
 " trigger abbreviations
 inoremap <c-k> ,<c-]>
+
+nnoremap <s-scrollwheelup> zh
+nnoremap <s-scrollwheeldown> zl
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()

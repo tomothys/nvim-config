@@ -54,45 +54,6 @@ require("lazy").setup({
             ]]
         end,
     },
-    -- {
-    --     "folke/tokyonight.nvim",
-    --     lazy = false,    -- make sure we load this during startup if it is your main colorscheme
-    --     priority = 1000, -- make sure to load this before all the other start plugins
-    --     config = function()
-    --         vim.cmd [[
-    --             colorscheme tokyonight
-    --
-    --             highlight! @text.uri gui=NONE
-    --             highlight! link Comment StatusLineNC
-    --
-    --             highlight LineNr gui=bold guibg=#373640 guifg=#7aa2f7
-    --             highlight! link CursorLineNr LineNr
-    --             highlight LineNrAbove guibg=#373640 guifg=#db4b4b
-    --             highlight LineNrBelow guibg=#373640 guifg=#9ece6a
-    --
-    --             highlight StatusLine gui=bold guifg=#000000 guibg=#e0af68
-    --             highlight StatusLineNC guifg=#e0af68 guibg=#373640
-    --             highlight! link Winbar StatusLine
-    --             highlight! link WinbarNC StatusLineNC
-    --             highlight! link TablineFill StatusLineNC
-    --             highlight! link TablineSel StatusLine
-    --
-    --             highlight SignColumn guibg=#373640
-    --             highlight DiagnosticSignError guifg=#db4b4b guibg=#373640
-    --             highlight DiagnosticSignWarn guifg=#e0af68 guibg=#373640
-    --             highlight DiagnosticSignInfo guifg=#0db9d7 guibg=#373640
-    --             highlight DiagnosticSignHint guifg=#1abc9c guibg=#373640
-    --             highlight DiagnosticSignOk ctermfg=10 guifg=LightGreen guibg=#373640
-    --             highlight GitSignsAdd guibg=#373640
-    --             highlight GitSignsChange guibg=#373640
-    --             highlight GitSignsDelete guibg=#373640
-    --
-    --             highlight NormalFloat guifg=#c0caf5 guibg=#373640
-    --             highlight! link FloatBorder StatusLineNC
-    --             highlight! link FloatTitle FloatBorder
-    --         ]]
-    --     end,
-    -- },
     {
         lazy = false,
         priority = 999,
@@ -170,18 +131,15 @@ require("lazy").setup({
         end
     },
     {
-        "junegunn/fzf.vim",
-        dependencies = { "junegunn/fzf" },
+        "nvim-telescope/telescope.nvim",
+        tag = "0.1.6",
+        dependencies = { { "nvim-lua/plenary.nvim" } },
         config = function()
-            vim.cmd [[
-                let $FZF_DEFAULT_OPTS='--layout=reverse'
-                let $FZF_DEFAULT_COMMAND='rg --files --hidden -g "!{node_modules/*,.git/*}"'
-                let g:fzf_preview_window = []
-                let g:fzf_layout = {'window': { 'width': 0.6, 'height': 0.6, 'border': 'rounded' }}
-            ]]
-
-            vim.keymap.set("n", "<c-p>", ":Files<cr>", { silent = true })
-            vim.keymap.set("n", "<leader>p", ":Files<cr>", { silent = true })
+            local builtin = require("telescope.builtin")
+            vim.keymap.set("n", "<c-p>", builtin.find_files, {})
+            vim.keymap.set("n", "<leader>p", builtin.find_files, {})
+            vim.keymap.set("n", "<c-h>", builtin.help_tags, {})
+            vim.keymap.set("n", "<c-f>", builtin.live_grep, {})
         end
     },
     { "mg979/vim-visual-multi" },
