@@ -41,8 +41,6 @@ nnoremap <silent> <leader>w <c-w>
 
 " save current buffer
 nnoremap <silent> <c-s> :w<cr>
-nnoremap <silent> gw :w<cr>
-nnoremap <silent> gW :wa<cr>
 
 " insert mode mappings for ctrl+arrow keys
 inoremap <c-l> <right>
@@ -58,6 +56,9 @@ nnoremap <expr> k v:count > 1 ? "m'" . v:count . 'k' : 'k'
 
 " trigger abbreviations
 inoremap <c-k> ,<c-]>
+
+nnoremap <s-scrollwheelup> zh
+nnoremap <s-scrollwheeldown> zl
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()
