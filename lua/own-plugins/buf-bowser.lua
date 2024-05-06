@@ -18,7 +18,7 @@ local set_keymaps = function()
         local bufnr = get_bufnr(vim.v.count)
 
         if bufnr == nil then
-            print("Buf-Bowser: Buffer not found")
+            print("Buf-Bowser: Buffer " .. vim.v.count .. " not found")
             return
         end
 

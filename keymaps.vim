@@ -30,10 +30,6 @@ vnoremap ( c()<esc>"-Pl
 vnoremap { c{}<esc>"-Pl
 vnoremap [ c[]<esc>"-Pl
 
-" reindent when entering insert mode via i/I
-nnoremap i i<c-f>
-nnoremap I I<c-f>
-
 " quickfix list
 nnoremap <silent> gl :cclose<cr>
 nnoremap <silent> go :copen<cr>
@@ -65,7 +61,7 @@ inoremap <c-k> ,<c-]>
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()
-    vnoremap <buffer> gv "zyoconsole.log("<c-r>z", <c-r>z);<esc>
+    vnoremap <buffer> gv "zyoconsole.log("##### <c-r>z", <c-r>z);<esc>
 endfunction
 
 augroup javascript_keymaps

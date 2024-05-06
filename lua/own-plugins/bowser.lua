@@ -65,9 +65,16 @@ local function render_buffer_list(bufnr)
             local split_path_list = utils.split_string(name, "/")
 
             local filename = table.remove(split_path_list, #split_path_list)
+
+            local modified_marker = ""
+
+            if buf.changed ~= 0 then
+                modified_marker = " [+]"
+            end
+
             local path = table.concat(split_path_list, "/")
 
-            table.insert(buf_names, "  " .. i .. ": " .. filename .. " - " .. path)
+            table.insert(buf_names, "  " .. i .. ": " .. filename .. modified_marker .. " - " .. path)
         end
     end
 
