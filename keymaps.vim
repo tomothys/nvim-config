@@ -63,9 +63,6 @@ nnoremap <expr> k v:count > 1 ? "m'" . v:count . 'k' : 'k'
 inoremap <c-k> ,<c-]>
 inoremap fk ,<c-]>
 
-nnoremap <s-scrollwheelup> zh
-nnoremap <s-scrollwheeldown> zl
-
 " JavaScript keymaps
 function! JavaScriptKeyMaps()
     vnoremap <buffer> gv "zyoconsole.log("##### <c-r>z", <c-r>z);<esc>
