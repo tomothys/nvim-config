@@ -1,16 +1,41 @@
-inoreab k, <c-o>O
+inoreab par, ()
+inoreab (), {}
+inoreab {}, []
+inoreab [], <>
+inoreab <>, ()
+
+inoreab ()h, ()<left>
+inoreab {}h, {}<left>
+inoreab []h, []<left>
+inoreab <>h, <><left>
+
+inoreab "", ''
+inoreab '', ``
+inoreab ``, ""
 
 " JavaScript abbrevs
 function! JavaScriptAbbrevs()
-    inoreab <buffer> imp, import {}<c-o>mb from "";<left><left>
+    inoreab <buffer> str, string
+    inoreab <buffer> string, ""
 
-    inoreab <buffer> cn, const<space><space><c-o>mb=<space>
+    inoreab <buffer> $par, ${}<left>
 
-    inoreab <buffer> if, if ()<c-o>mb {<cr>}<c-o>O
+    inoreab <buffer> imp, import
+    inoreab <buffer> import, <bs><esc>F"df"aimport {} from <c-r>-;<esc>F}i
+
+    inoreab <buffer> cn, const
+    inoreab <buffer> const, <bs><esc>bdeaconst<space><c-r>-<space>=<space>;<left>
+
+    inoreab <buffer> l, let
+    inoreab <buffer> let, <bs><esc>bdealet<space><c-r>-<space>=<space>;<left>
+
+    inoreab <buffer> obj, {<cr>}<c-o>O
+    inoreab <buffer> iife, (() => {<cr>})();<c-o>O
+
+    inoreab <buffer> if, <bs><esc>F(df)aif <c-r>- {<cr>}<c-o>O
     inoreab <buffer> el, <esc>/}<cr>a<space>else {<cr>}<c-o>O
-    inoreab <buffer> elif, <esc>/}<cr>a<space>else if ()<c-o>mb {<cr>}<c-o>O
-    inoreab <buffer> fa, ()<c-o>mb => {<cr>}<c-o>O
-    inoreab <buffer> fm, ()<c-o>mb {<cr>}<c-o>O
+    inoreab <buffer> elif, <bs><esc>F(df)/}<cr>a<space>else if <c-r>- {<cr>}<c-o>O
+    inoreab <buffer> fa, <bs><esc>F(df) => {<cr>}<c-o>O
 
     inoreab <buffer> ma, <bs>.map((item) => {<cr>})<c-o>O
     inoreab <buffer> so, <bs>.sort(([item_a, item_b]) => {<cr>})<c-o>O
@@ -27,16 +52,19 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> ca, <bs>.catch((error) => {<cr>console.error(error);<cr>})<c-o>O
     inoreab <buffer> fi, <bs>.finally(() => {<cr>})<c-o>O
 
+    inoreab <buffer> fn, function
     inoreab <buffer> aw, await<space>
-    inoreab <buffer> fn, function<space>
-    inoreab <buffer> f, false
-    inoreab <buffer> t, true
-    inoreab <buffer> r, return<space>
+    inoreab <buffer> r, return;<left>
     inoreab <buffer> n, null
     inoreab <buffer> u, undefined
 
-    inoreab <buffer> is, ===<space>
-    inoreab <buffer> isn, !==<space>
+    inoreab <buffer> f, false
+    inoreab <buffer> false, true
+    inoreab <buffer> true, false
+
+    inoreab <buffer> is, ===
+    inoreab <buffer> ===, !==
+    inoreab <buffer> !==, ===
 endfunction
 
 augroup javascript_abbrevs
@@ -79,46 +107,4 @@ endfunction
 augroup vim_abbrevs
     autocmd!
     autocmd FileType vim call VimAbbrevs()
-augroup END
-
-" CSS abbrevs
-function! CssAbbrevs()
-    inoreab <buffer> c, color: ;<left>
-    inoreab <buffer> bg, background: ;<left>
-    inoreab <buffer> bgc, background-color: ;<left>
-    inoreab <buffer> bo, border: ;<left>
-    inoreab <buffer> bor, border-radius: ;<left>
-    inoreab <buffer> fs, font-size: ;<left>
-    inoreab <buffer> fw, font-weight: ;<left>
-    inoreab <buffer> ff, font-family: ;<left>
-    inoreab <buffer> bs, box-sizing: border-box;
-    inoreab <buffer> m, margin: ;<left>
-    inoreab <buffer> p, padding: ;<left>
-    inoreab <buffer> v, var(--)<left>
-    inoreab <buffer> pe, pointer-event: none;
-    inoreab <buffer> w, width: ;<left>
-    inoreab <buffer> mw, min-width: ;<left>
-    inoreab <buffer> h, height: ;<left>
-    inoreab <buffer> mh, min-height: ;<left>
-    inoreab <buffer> dn, display: none;
-    inoreab <buffer> dc, display: content;
-    inoreab <buffer> db, display: block;
-    inoreab <buffer> dib, display: inline-block;
-    inoreab <buffer> df, display: flex;
-    inoreab <buffer> dif, display: inline-flex;
-    inoreab <buffer> jc, justify-content: center;<esc>bviw<c-g>
-    inoreab <buffer> ai, align-items: center;<esc>bviw<c-g>
-    inoreab <buffer> dg, display: grid;
-    inoreab <buffer> gc, grid-template-columns: ;<left>
-    inoreab <buffer> gr, grid-template-rows: ;<left>
-    inoreab <buffer> g, gap: ;<left>
-    inoreab <buffer> tf, transform: ;<left>
-    inoreab <buffer> ts, transition: ;<left>
-    inoreab <buffer> o, opacity: ;<left>
-    inoreab <buffer> cp, cursor: pointer;<left>
-endfunction
-
-augroup css_abbrevs
-    autocmd!
-    autocmd FileType scss,css,vue,svelte,html call CssAbbrevs()
 augroup END

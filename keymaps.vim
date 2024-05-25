@@ -1,6 +1,11 @@
 " set mapleader to a space
 let g:mapleader = ' '
 
+inoremap jk <esc>
+inoremap je <esc>
+nnoremap <leader>s :w<cr>
+nnoremap <leader>as :wa<cr>
+
 " Use search register to mark word under cursor
 nnoremap <silent> <leader>j :let @/="<c-r><c-w>" \| set hlsearch<cr>
 " Use search register to mark selected part
@@ -56,6 +61,7 @@ nnoremap <expr> k v:count > 1 ? "m'" . v:count . 'k' : 'k'
 
 " trigger abbreviations
 inoremap <c-k> ,<c-]>
+inoremap fk ,<c-]>
 
 nnoremap <s-scrollwheelup> zh
 nnoremap <s-scrollwheeldown> zl
