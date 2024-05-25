@@ -68,7 +68,7 @@ nnoremap <s-scrollwheeldown> zl
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()
-    vnoremap <buffer> gv "zyoconsole.log("<c-r>z", <c-r>z);<esc>
+    vnoremap <buffer> gv "zyoconsole.log("##### <c-r>z", <c-r>z);<esc>
 endfunction
 
 augroup javascript_keymaps
