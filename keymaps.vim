@@ -2,7 +2,6 @@
 let g:mapleader = ' '
 
 inoremap jk <esc>
-inoremap je <esc>
 nnoremap <leader>s :w<cr>
 nnoremap <leader>as :wa<cr>
 
@@ -60,8 +59,8 @@ nnoremap <expr> j v:count > 1 ? "m'" . v:count . 'j' : 'j'
 nnoremap <expr> k v:count > 1 ? "m'" . v:count . 'k' : 'k'
 
 " trigger abbreviations
-inoremap <c-k> ,<c-]>
-inoremap fk ,<c-]>
+inoremap <c-k> ,,<c-]>
+inoremap fk ,,<c-]>
 
 " JavaScript keymaps
 function! JavaScriptKeyMaps()
