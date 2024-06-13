@@ -2,8 +2,6 @@
 let g:mapleader = ' '
 
 inoremap jk <esc>
-nnoremap <leader>s :w<cr>
-nnoremap <leader>as :wa<cr>
 
 " Use search register to mark word under cursor
 nnoremap <silent> <leader>j :let @/="<c-r><c-w>" \| set hlsearch<cr>
@@ -18,14 +16,14 @@ vnoremap + "+
 nnoremap <silent> <esc> :nohl<cr><esc>
 
 " select pasted before
-nnoremap p p`[v`]
-nnoremap P P`[v`]
-vnoremap p p`[v`]
-vnoremap P P`[v`]
+"nnoremap p p`[v`]
+"nnoremap P P`[v`]
+"vnoremap p p`[v`]
+"vnoremap P P`[v`]
 
 " change behavior of o - stay in normal mode
-nnoremap o o<esc>
-nnoremap O O<esc>
+"nnoremap o o<esc>
+"nnoremap O O<esc>
 
 " surround selected text
 vnoremap " c""<esc>"-Pl
@@ -43,8 +41,10 @@ nnoremap <silent> gp :cprev<cr>
 " normal mode mappings for leader keys
 nnoremap <silent> <leader>w <c-w>
 
-" save current buffer
+" save buffer/s
 nnoremap <silent> <c-s> :w<cr>
+nnoremap <leader>s :w<cr>
+nnoremap <leader>as :wa<cr>
 
 " insert mode mappings for ctrl+arrow keys
 inoremap <c-l> <right>
