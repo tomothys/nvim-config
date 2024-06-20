@@ -1,31 +1,47 @@
+inoreab gh,, <><space><bs>
+inoreab gs,, ''<space><bs>
+inoreab g#,, ``<space><bs>
+inoreab g2,, ""<space><bs>
+inoreab g5,, []<space><bs>
+inoreab g8,, ()<space><bs>
+inoreab g9,, {}<space><bs>
+
+inoreab (),, (<cr>)<c-o>O
+inoreab [],, [<cr>]<c-o>O
+inoreab {},, {<cr>}<c-o>O
+
+inoreab imp,, import
+inoreab cn,, const
+inoreab str,, string
+inoreab boo,, boolean
+inoreab num,, number
+inoreab l,, let
+inoreab fn,, function
+inoreab r,, return<space>
+inoreab u,, undefined
+inoreab aw,, await
+
 " JavaScript abbrevs
 function! JavaScriptAbbrevs()
-    inoreab <buffer> str,, string
-    inoreab <buffer> boo,, boolean
-    inoreab <buffer> num,, number
+    inoreab <buffer> com,, /***/<left><left><cr><cr><del><bs><esc>kA<space>
 
-    inoreab <buffer> imp,, import
-    inoreab <buffer> import,, <bs><esc>F"df"aimport {} from <c-r>-;<esc>F}i
-
-    inoreab <buffer> cn,, const
+    inoreab <buffer> import,, import {} from "";<esc>hi
     inoreab <buffer> const,, <bs><esc>bdeaconst<space><c-r>-<space>=<space>;<left>
-
-    inoreab <buffer> l,, let
     inoreab <buffer> let,, <bs><esc>bdealet<space><c-r>-<space>=<space>;<left>
 
-    inoreab <buffer> bra,, []<left>
     inoreab <buffer> obj,, {<cr>}<c-o>O
     inoreab <buffer> iife,, (() => {<cr>})();<c-o>O
 
-    inoreab <buffer> if,, <bs><esc>d^aif (<c-r>-) {<cr>}<c-o>O
-    inoreab <buffer> el,, <esc>/}<cr>a<space>else {<cr>}<c-o>O
-    inoreab <buffer> elif,, <bs><esc>d^/}<cr>a else if (<c-r>-) {<cr>}<c-o>O
+    inoreab <buffer> if,, if () {}
+    inoreab <buffer> el,, <esc>/}<cr>:nohl<cr>a<space>else {}
+    inoreab <buffer> elif,, <esc>/}<cr>:nohl<cr>a<space>else if () {}
 
-    inoreab <buffer> fa,, <bs><esc>d?##a<bs><bs>(<c-r>-) => {<cr>}<c-o>O
+    inoreab <buffer> function,, function () {}
+    inoreab <buffer> fa,, () => {}
 
-    inoreab <buffer> ma,, <bs>.map((item) => {<cr>})<c-o>O
-    inoreab <buffer> so,, <bs>.sort(([item_a, item_b]) => {<cr>})<c-o>O
-    inoreab <buffer> fil,, <bs>.filter((item) => {<cr>})<c-o>O
+    inoreab <buffer> ma,, <bs>.map((item) => {})<left>
+    inoreab <buffer> so,, <bs>.sort(([item_a, item_b]) => {})<left>
+    inoreab <buffer> fil,, <bs>.filter((item) => {})<left>
     inoreab <buffer> red,, <bs>.reduce((acc, item) => {<cr>}, [])<c-o>O
     inoreab <buffer> foe,, <bs>.forEach((item) => {<cr>})<c-o>O
 
@@ -38,13 +54,11 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> ca,, <bs>.catch((error) => {<cr>console.error(error);<cr>})<c-o>O
     inoreab <buffer> fi,, <bs>.finally(() => {<cr>})<c-o>O
 
-    inoreab <buffer> fn,, function
-    inoreab <buffer> function,, <bs><esc>d^afunction (<c-r>-) {<cr>}<c-o>O
-    inoreab <buffer> aw,, await<space>
-    inoreab <buffer> r,, return<space>
-    inoreab <buffer> u,, undefined
     inoreab <buffer> undefined,, null
     inoreab <buffer> null,, undefined
+
+    inoreab <buffer> await,, async
+    inoreab <buffer> async,, await
 
     inoreab <buffer> f,, false
     inoreab <buffer> false,, true

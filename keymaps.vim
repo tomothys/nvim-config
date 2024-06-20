@@ -12,6 +12,9 @@ vnoremap <silent> <leader>j "zy:let @/="<c-r>z" \| set hlsearch<cr>
 nnoremap + "+
 vnoremap + "+
 
+nnoremap <leader>ff %
+
+
 " Remove search highlight on esc keypress
 nnoremap <silent> <esc> :nohl<cr><esc>
 
