@@ -169,6 +169,9 @@ local function set_keymaps(bufnr)
 
     local close_win = function()
         vim.api.nvim_win_close(bowser_win_id, false)
+        bowser_win_id = nil
+        bowser_bufnr = nil
+        current_win_id = nil
     end
 
     vim.keymap.set("n", "q", close_win, { buffer = bufnr, noremap = true, silent = true })
@@ -219,6 +222,11 @@ M.setup = function(options)
     local trigger = options.trigger or "<leader>b"
 
     vim.keymap.set({ "n" }, trigger, function()
+        if bowser_win_id ~= nil then
+            print("Bowser is already open")
+            return
+        end
+
         current_win_id = vim.api.nvim_get_current_win()
 
         bowser_bufnr = vim.api.nvim_create_buf(false, true)
