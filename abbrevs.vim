@@ -17,7 +17,7 @@ inoreab boo,, boolean
 inoreab num,, number
 inoreab l,, let
 inoreab fn,, function
-inoreab r,, return<space>
+inoreab r,, return
 inoreab u,, undefined
 inoreab aw,, await
 
@@ -29,14 +29,13 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> const,, <bs><esc>bdeaconst<space><c-r>-<space>=<space>;<left>
     inoreab <buffer> let,, <bs><esc>bdealet<space><c-r>-<space>=<space>;<left>
 
-    inoreab <buffer> obj,, {<cr>}<c-o>O
     inoreab <buffer> iife,, (() => {<cr>})();<c-o>O
 
-    inoreab <buffer> if,, if () {}
-    inoreab <buffer> el,, <esc>/}<cr>:nohl<cr>a<space>else {}
-    inoreab <buffer> elif,, <esc>/}<cr>:nohl<cr>a<space>else if () {}
+    inoreab <buffer> if,, if () {<cr>}<esc>[{F(a
+    inoreab <buffer> el,, <esc>]}a<space>else {<cr>}<c-o>O
+    inoreab <buffer> elif,, <esc>]}a<space>else if () {<cr>}<esc>[{F(a
 
-    inoreab <buffer> function,, function () {}
+    inoreab <buffer> function,, function () {<cr>}<esc>[{F(i
     inoreab <buffer> fa,, () => {}
 
     inoreab <buffer> ma,, <bs>.map((item) => {})<left>
@@ -50,7 +49,7 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> pall,, await Promise.all([<cr>])<c-o>O
     inoreab <buffer> pals,, await Promise.allSettled([<cr>])<c-o>O
 
-    inoreab <buffer> th,, <bs>.then((_param) => {<cr>})<c-o>O
+    inoreab <buffer> th,, <bs>.then((reponse) => {<cr>})<c-o>O
     inoreab <buffer> ca,, <bs>.catch((error) => {<cr>console.error(error);<cr>})<c-o>O
     inoreab <buffer> fi,, <bs>.finally(() => {<cr>})<c-o>O
 
