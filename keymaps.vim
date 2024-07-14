@@ -2,6 +2,8 @@
 let g:mapleader = ' '
 
 inoremap jk <esc>
+nnoremap ö <c-v>
+nnoremap <leader>ö :
 
 " Use search register to mark word under cursor
 nnoremap <silent> <leader>j :let @/="<c-r><c-w>" \| set hlsearch<cr>
@@ -11,9 +13,6 @@ vnoremap <silent> <leader>j "zy:let @/="<c-r>z" \| set hlsearch<cr>
 " Make using the clipboard a little bit easier/faster
 nnoremap + "+
 vnoremap + "+
-
-nnoremap <leader>ff %
-
 
 " Remove search highlight on esc keypress
 nnoremap <silent> <esc> :nohl<cr><esc>
@@ -25,11 +24,10 @@ nnoremap <silent> <esc> :nohl<cr><esc>
 "vnoremap P P`[v`]
 
 " change behavior of o - stay in normal mode
-"nnoremap o o<esc>
-"nnoremap O O<esc>
+nnoremap o o<esc>
+nnoremap O O<esc>
 
 " surround selected text
-vnoremap " c""<esc>"-Pl
 vnoremap ' c''<esc>"-Pl
 vnoremap ( c()<esc>"-Pl
 vnoremap { c{}<esc>"-Pl
