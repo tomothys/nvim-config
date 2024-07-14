@@ -11,7 +11,8 @@ vim.cmd [[
 -- require("own-plugins.git-blame").setup()
 require("own-plugins.meowser").setup()
 require("own-plugins.bowser").setup({ trigger = "<leader>b" })
-require("own-plugins.buf-bowser").setup()
+-- require("own-plugins.buf-bowser").setup()
+require("own-plugins.taskmanager").setup()
 
 -- INSTALL LAZY.NVIM IF NOT INSTALLED [BEGIN]
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
