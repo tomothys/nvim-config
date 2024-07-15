@@ -89,4 +89,16 @@ M.hide_cursor_line = function()
     vim.api.nvim_win_set_option(winId, 'cursorline', false)
 end
 
+-- Check if directory or file exists
+M.exists = function(path)
+    local ok, errmsg, code = os.rename(path, path)
+
+    -- permission denied but it exists
+    if not ok and code == 13 then
+        return true
+    end
+
+    return ok, errmsg
+end
+
 return M
