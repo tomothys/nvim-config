@@ -33,6 +33,9 @@ local function create_user_commands()
     vim.api.nvim_create_user_command('RerenderCurrentTask', render_current_task, {})
 end
 
+local function create_key_maps()
+    vim.api.nvim_set_keymap('n', '<leader>at', ':AddTask ', { noremap = true })
+end
 
 M.setup = function()
     print("taskmanager initialized")
@@ -42,6 +45,7 @@ M.setup = function()
 
     render_current_task()
     create_user_commands()
+    create_key_maps()
 end
 
 return M
