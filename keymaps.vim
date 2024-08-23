@@ -33,6 +33,9 @@ vnoremap ( c()<esc>"-Pl
 vnoremap { c{}<esc>"-Pl
 vnoremap [ c[]<esc>"-Pl
 
+" insert mapping for surrounding characters like {}
+inoremap <c-o> {}
+
 " quickfix list
 nnoremap <silent> gl :cclose<cr>
 nnoremap <silent> go :copen<cr>
