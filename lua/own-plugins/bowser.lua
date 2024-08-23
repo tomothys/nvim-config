@@ -244,7 +244,7 @@ M.setup = function(options)
         bowser_bufnr = vim.api.nvim_create_buf(false, true)
         render_buffer_list(bowser_bufnr)
 
-        bowser_win_id = utils.create_floating_window(bowser_bufnr, " Bowser ")
+        bowser_win_id = utils.create_split_window(bowser_bufnr, 'above')
         vim.o.cursorline = true
 
         local current_buf_index = buf_nr_to_index_map[BUFFER_PREFIX .. vim.api.nvim_win_get_buf(current_win_id)]

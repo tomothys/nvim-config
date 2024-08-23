@@ -27,6 +27,18 @@ M.create_floating_window = function(bufnr, title)
     return winId
 end
 
+M.create_split_window = function(bufnr, pos)
+    local height = vim.api.nvim_buf_line_count(bufnr)
+
+    local winId = vim.api.nvim_open_win(bufnr, true, {
+        split = pos,
+        height = height + 1,
+        style = 'minimal'
+    })
+
+    return winId
+end
+
 M.reset_floating_windows_size = function(win_id)
     local bufnr = vim.api.nvim_win_get_buf(win_id)
 
