@@ -1,20 +1,12 @@
-inoreab gh,, <><space><bs>
-inoreab gs,, ''<space><bs>
-inoreab g#,, ``<space><bs>
-inoreab g2,, ""<space><bs>
-inoreab g5,, []<space><bs>
-inoreab g8,, ()<space><bs>
-inoreab g9,, {}<space><bs>
-
 inoreab (),, (<cr>)<c-o>O
 inoreab [],, [<cr>]<c-o>O
 inoreab {},, {<cr>}<c-o>O
 
 inoreab imp,, import
 inoreab cn,, const
-inoreab str,, string
-inoreab boo,, boolean
-inoreab num,, number
+inoreab s,, string
+inoreab b,, boolean
+inoreab n,, number
 inoreab l,, let
 inoreab fn,, function
 inoreab r,, return
@@ -38,18 +30,18 @@ function! JavaScriptAbbrevs()
     inoreab <buffer> function,, function () {<cr>}<esc>[{F(i
     inoreab <buffer> fa,, () => {}
 
-    inoreab <buffer> ma,, <bs>.map((item) => {})<left>
-    inoreab <buffer> so,, <bs>.sort(([item_a, item_b]) => {})<left>
-    inoreab <buffer> fil,, <bs>.filter((item) => {})<left>
-    inoreab <buffer> red,, <bs>.reduce((acc, item) => {<cr>}, [])<c-o>O
-    inoreab <buffer> foe,, <bs>.forEach((item) => {<cr>})<c-o>O
+    inoreab <buffer> ma,, <bs>.map((item) => )<left>{}
+    inoreab <buffer> so,, <bs>.sort(([item_a, item_b]) => )<left>{}
+    inoreab <buffer> fil,, <bs>.filter((item) => )<left>{}
+    inoreab <buffer> red,, <bs>.reduce((acc, item) => , [])<c-o>F,{}
+    inoreab <buffer> foe,, <bs>.forEach((item) => )<left>{}
 
-    inoreab <buffer> try,, try {<cr>} catch(error) {<cr>console.error(error)<cr>}<c-o>2k<c-o>O
+    inoreab <buffer> try,, try {<cr>} catch(err) {<cr>console.error(err)<cr>}<c-o>2k<c-o>O
 
     inoreab <buffer> pall,, await Promise.all([<cr>])<c-o>O
     inoreab <buffer> pals,, await Promise.allSettled([<cr>])<c-o>O
 
-    inoreab <buffer> th,, <bs>.then((reponse) => {<cr>})<c-o>O
+    inoreab <buffer> th,, <bs>.then((response) => {<cr>})<c-o>O
     inoreab <buffer> ca,, <bs>.catch((error) => {<cr>console.error(error);<cr>})<c-o>O
     inoreab <buffer> fi,, <bs>.finally(() => {<cr>})<c-o>O
 
