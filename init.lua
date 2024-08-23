@@ -94,7 +94,7 @@ require("lazy").setup({
                 view = {
                     width = 70,
                     side = 'right',
-                    number = true
+                    number = false
                 },
             })
 
