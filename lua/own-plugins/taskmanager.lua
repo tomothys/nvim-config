@@ -3,7 +3,6 @@ local utils = require("utils")
 local M = {}
 
 
-
 local function get_current_task()
     local homedir = os.getenv("HOME")
 
@@ -35,9 +34,7 @@ end
 local function add_new_task(task_str)
     local time = os.date('%H:%M')
 
-    vim.fn.system('echo "- ' .. time .. '> ' .. task_str .. '" >> ~/tasks/tasks.txt')
-
-    render_current_task()
+    vim.fn.system('echo "- ' .. time .. ' > ' .. task_str .. '" >> ~/tasks/tasks.txt')
 end
 
 
@@ -47,12 +44,15 @@ local function archive_tasks()
 
     vim.fn.system("mv " .. homedir .. "/tasks/tasks.txt " .. homedir .. "/tasks/" .. date_and_time .. "_tasks.txt")
     vim.fn.system("touch " .. homedir .. "/tasks/tasks.txt")
+
+    render_current_task()
 end
 
 
 local function create_user_commands()
     vim.api.nvim_create_user_command('TaskAdd', function(opts)
         add_new_task(opts.fargs[1])
+
         render_current_task()
     end, { nargs = 1 })
 
@@ -63,10 +63,13 @@ end
 
 
 local function create_key_maps()
-    vim.keymap.set('n', '<leader>at', function()
-        add_new_task(vim.fn.input('Task: '))
+    vim.keymap.set('n', '<leader>ta', function()
+        add_new_task(vim.fn.input(' New Task > '))
+
         render_current_task()
-    end, { expr = true, noremap = true })
+    end, { noremap = true })
+
+    vim.keymap.set('n', '<leader>to', ':split ~/tasks/tasks.txt<cr>', { noremap = true, silent = true })
 end
 
 
