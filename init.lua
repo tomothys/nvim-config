@@ -10,7 +10,7 @@ vim.cmd [[
 -- Initilize own plugins
 -- require("own-plugins.git-blame").setup()
 require("own-plugins.meowser").setup()
-require("own-plugins.bowser").setup({ trigger = "<leader>b" })
+require("own-plugins.bowser").setup()
 -- require("own-plugins.buf-bowser").setup()
 require("own-plugins.taskmanager").setup()
 
@@ -143,13 +143,6 @@ require("lazy").setup({
             vim.keymap.set("n", "<c-f>", builtin.live_grep, {})
         end
     },
-    { "mg979/vim-visual-multi" },
-    {
-        "numToStr/Comment.nvim",
-        config = function()
-            require("Comment").setup()
-        end
-    },
     {
         "tpope/vim-fugitive",
         config = function()
@@ -171,6 +164,38 @@ require("lazy").setup({
                 end
             }
         end
-    }
+    },
+    {
+        "numToStr/Comment.nvim",
+        config = function()
+            require("Comment").setup()
+        end
+    },
+    { "mg979/vim-visual-multi" },
+    {
+        "folke/flash.nvim",
+        event = "VeryLazy",
+        ---@type Flash.Config
+        opts = {},
+        -- stylua: ignore
+        keys = {
+            {
+                "s",
+                mode = { "n", "x", "o" },
+                function()
+                    require("flash").jump()
+                end,
+                desc = "Flash"
+            },
+            {
+                "S",
+                mode = { "n", "x", "o" },
+                function()
+                    require("flash").treesitter()
+                end,
+                desc = "Flash Treesitter"
+            },
+        },
+    },
 })
 -- LAZY.NVIM [END]
