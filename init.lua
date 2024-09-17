@@ -10,7 +10,7 @@ vim.cmd [[
 -- Initilize own plugins
 -- require("own-plugins.git-blame").setup()
 require("own-plugins.meowser").setup()
-require("own-plugins.bowser").setup()
+-- require("own-plugins.bowser").setup()
 -- require("own-plugins.buf-bowser").setup()
 require("own-plugins.taskmanager").setup()
 
@@ -137,10 +137,13 @@ require("lazy").setup({
         dependencies = { { "nvim-lua/plenary.nvim" } },
         config = function()
             local builtin = require("telescope.builtin")
+            vim.keymap.set("n", "<c-s-p>", builtin.commands, {})
             vim.keymap.set("n", "<c-p>", builtin.find_files, {})
             vim.keymap.set("n", "<leader>p", builtin.find_files, {})
             vim.keymap.set("n", "<c-h>", builtin.help_tags, {})
-            vim.keymap.set("n", "<c-f>", builtin.live_grep, {})
+            vim.keymap.set("n", "<c-s-f>", builtin.live_grep, {})
+            vim.keymap.set("n", "<c-f>", builtin.current_buffer_fuzzy_find, {})
+            vim.keymap.set("n", "<c-b>", builtin.buffers, {})
         end
     },
     {
@@ -176,7 +179,13 @@ require("lazy").setup({
         "folke/flash.nvim",
         event = "VeryLazy",
         ---@type Flash.Config
-        opts = {},
+        opts = {
+            modes = {
+                char = {
+                    enabled = false
+                }
+            }
+        },
         -- stylua: ignore
         keys = {
             {
