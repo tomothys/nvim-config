@@ -1,5 +1,9 @@
 local M = {}
 
+---Creates a new floating window.
+---It's centered and as big as it need to be to show whole text of buffer.
+---@param bufnr integer
+---@param title string
 M.create_floating_window = function(bufnr, title)
     local width = 0
 
@@ -9,20 +13,30 @@ M.create_floating_window = function(bufnr, title)
         end
     end
 
-    local height = vim.api.nvim_buf_line_count(bufnr)
+    if width < 37 then
+        width = 37
+    end
+
+    local height = vim.api.nvim_buf_line_count(bufnr) + 1
 
     local winId = vim.api.nvim_open_win(bufnr, true, {
         relative = "editor",
         width = width,
         height = height,
-        col = vim.api.nvim_get_option("columns") / 2 - (width / 2),
-        row = vim.api.nvim_get_option("lines") / 2 - (height / 2),
+        col = vim.api.nvim_get_option_value("columns", {}) / 2 - (width / 2),
+        row = vim.api.nvim_get_option_value("lines", {}) / 2 - (height / 2),
         style = "minimal",
-        border = "rounded",
+        border = "solid",
         title = title
     })
 
-    vim.api.nvim_win_set_option(winId, "wrap", false)
+    vim.api.nvim_set_option_value("wrap", false, { win = winId })
+    vim.api.nvim_set_option_value("winbar", "%#WinbarPrompt#Press <q> or <esc> to close " .. title, { win = winId })
+
+    vim.cmd("highlight link WinbarPrompt NonText")
+
+    vim.keymap.set("n", "q", ":q<cr>", { buffer = bufnr, silent = true })
+    vim.keymap.set("n", "<esc>", ":q<cr>", { buffer = bufnr, silent = true })
 
     return winId
 end
@@ -58,6 +72,8 @@ M.reset_floating_windows_size = function(win_id)
     })
 end
 
+---@param array table
+---@param val unknown
 M.array_contains = function(array, val)
     for _, table_val in ipairs(array) do
         if table_val == val then
@@ -78,10 +94,15 @@ M.get_table_length = function(table)
     return count
 end
 
+---Trims whitespace infront and end of a string
+---@param str string
+---@return string
 M.trim_string = function(str)
     return str:gsub("^%s*(.-)%s*$", "%1")
 end
 
+---@param str string
+---@param delimiter string
 M.split_string = function(str, delimiter)
     local sub_str_list = {}
 
@@ -98,7 +119,7 @@ end
 
 M.hide_cursor_line = function()
     local winId = vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_option(winId, 'cursorline', false)
+    vim.api.nvim_set_option_value('cursorline', false, { win = winId })
 end
 
 -- Check if directory or file exists

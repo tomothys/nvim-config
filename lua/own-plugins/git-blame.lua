@@ -12,7 +12,7 @@ local function blame()
     print(utils.trim_string(output))
 end
 
-local M.setup = function()
+M.setup = function()
     vim.keymap.set("n", "<leader>gb", function()
         blame()
     end, {noremap = true})

@@ -1,6 +1,12 @@
 local utils = require("utils")
 
-local M = {}
+local M = {
+    bowser_bufnr = -1,
+    buffer_list = {},
+    marked_bufnr_list = {},
+}
+
+local MARKER = "_"
 
 local function set_syntax_highlighting()
     vim.cmd [[
@@ -8,235 +14,277 @@ local function set_syntax_highlighting()
             finish
         end
 
-        syntax match BowserLine /^.*$/
-        highlight BowserLine guifg=#737aa2
+        syntax match BowserFiletypeWhite / MD /
+        highlight BowserFiletypeWhite guifg=#1f1f28 guibg=#ffffff
 
-        syntax match BowserSpecial /<esc>\|<q>/ containedin=BowserLine
-        highlight BowserSpecial guifg=#e0af68
+        syntax match BowserFiletypeGreen / VIM /
+        highlight BowserFiletypeGreen guifg=#1f1f28 guibg=#00a855
 
-        syntax match BowserBufNr /^\s\+\d\+/ containedin=BowserLine
-        highlight link BowserBufNr BowserSpecial
+        syntax match BowserFiletypeBlue / TS \| TSX \| LUA /
+        highlight BowserFiletypeBlue guifg=#dcd7ba guibg=#1254b0
 
-        syntax match BowserFileName / \zs\S\+\ze/
-        highlight BowserFileName guifg=#7aa2f7
+        syntax match BowserFiletypeYellow / JS \| JSX \| JSON /
+        highlight BowserFiletypeYellow guifg=#1f1f28 guibg=#e8c900
 
-        syntax match BowserColumn /:/
-        highlight link BowserColumn BowserLine
+        syntax match BowserFilepath / \S*$/
+        highlight link BowserFilepath NonText
 
-        syntax match BowserFilePath /-.*$/
-        highlight BowserFilePath guifg=#737aa2
+        syntax match BowserMarked /:\zs_\ze/
+        highlight BowserMarked guifg=#ff9e3b guibg=#ff9e3b
 
         let b:current_syntax = "bowser"
     ]]
 end
 
-local last_used_win = nil
-local index_bufnr_dict = {}
-
-local function set_index_bufnr_entry(index, bufnr)
-    index_bufnr_dict["index_" .. index] = bufnr
+---Extract filename
+---@param path string
+---@return string
+local function extract_filename(path)
+    local split_path = utils.split_string(path, "/")
+    return split_path[#split_path]
 end
 
-local function get_bufnr_by_index(index)
-    local bufnr = index_bufnr_dict["index_" .. index]
-
-    if bufnr == nil then
-        error("Bowser Error: bufnr not found for index " .. index)
-    end
-
-    return bufnr
+---Extract file extension
+---@param filename string
+---@return string
+local function extract_file_extension(filename)
+    local split_filename = utils.split_string(filename, ".")
+    return split_filename[#split_filename]
 end
 
-local function get_index_by_bufnr(bufnr)
-    for key, indexed_bufnr in pairs(index_bufnr_dict) do
-        if indexed_bufnr == bufnr then
-            return utils.split_string(key, "_")[2]
+---Get list of open buffers
+local function get_open_buffers()
+    return vim.fn.getbufinfo({ buflisted = 1 })
+end
+
+---Render buflist to buffer
+local function render_buffer_list()
+    local longest_filename = ""
+    local longest_fileext = ""
+
+    for _, buf in ipairs(M.buffer_list) do
+        if buf.name == "" then
+            goto continue
         end
+
+        local filename = extract_filename(buf.name)
+        local fileext = extract_file_extension(filename)
+
+        if longest_filename == "" or filename:len() > longest_filename:len() then
+            longest_filename = filename
+        end
+
+        if longest_fileext == "" or fileext:len() > longest_fileext:len() then
+            longest_fileext = fileext
+        end
+
+        ::continue::
     end
 
-    error("Bowser Error: Index not found for bufnr: " .. bufnr)
-end
+    for i, buf in ipairs(M.buffer_list) do
+        if buf.name == "" then
+            goto continue
+        end
 
-local function jump_to_index(index)
-    vim.fn.search("  " .. index .. ":")
-end
+        local filename = extract_filename(buf.name)
+        local fileext = extract_file_extension(filename)
 
-local function jump_to_bufnr(bufnr)
-    vim.fn.search("  " .. get_index_by_bufnr(bufnr) .. ":")
-end
+        local rightpad_filename_count = longest_filename:len() - filename:len()
+        local filename_with_rightpad = filename .. ""
+        for _=1, rightpad_filename_count do
+            filename_with_rightpad = filename_with_rightpad .. " "
+        end
 
-local function render_win_header(bufnr)
-    vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { "  Press <q> or <esc> to close bowser", "" })
-end
+        local rightpad_fileext_count = longest_fileext:len() - fileext:len()
+        local fileext_with_rightpad = fileext:upper() .. ""
+        for _=1, rightpad_fileext_count do
+            fileext_with_rightpad = fileext_with_rightpad .. " "
+        end
 
-local function render_buffer_list(bufnr)
-    local open_buffers = vim.fn.getbufinfo({ buflisted = true })
 
-    local buf_names = {}
+        local line = "  " .. i .. ":"
 
-    for i, buf in ipairs(open_buffers) do
-        set_index_bufnr_entry(i, buf.bufnr)
-
-        local name = buf.name
-
-        if #name == 0 then
-            name = "[No_Name]"
-
-            table.insert(buf_names, "  " .. i .. ": " .. name)
+        local is_marked = utils.array_contains(M.marked_bufnr_list, buf.bufnr)
+        if is_marked then
+            line = line .. MARKER
         else
-            local split_path_list = utils.split_string(name, "/")
+            line = line .. " "
+        end
 
-            local filename = table.remove(split_path_list, #split_path_list)
+        line = line .. " " .. fileext_with_rightpad .. "  " .. filename_with_rightpad .. "  " .. buf.name:gsub(filename, "")
+        vim.api.nvim_buf_set_lines(M.bowser_bufnr, -1, -1, false, { line })
 
-            local modified_marker = ""
+        ::continue::
+    end
+end
 
-            if buf.changed ~= 0 then
-                modified_marker = " [+]"
-            end
+---Create floating window
+local function create_window()
+    return utils.create_floating_window(M.bowser_bufnr, "Bowser")
+end
 
-            local path = table.concat(split_path_list, "/")
+---Get the Bowser Index from line under cursor. Returns nil if no index found
+local function get_index_under_cursor()
+    local current_line = vim.api.nvim_get_current_line()
 
-            table.insert(buf_names, "  " .. i .. ": " .. filename .. modified_marker .. " - " .. path)
+    if current_line == "" then
+        return nil;
+    end
+
+    local line_without_possible_marker = current_line:sub(2)
+
+    local index = utils.trim_string(utils.split_string(line_without_possible_marker, ":")[1])
+
+    return tonumber(index)
+end
+
+local function render_tabline()
+    local tabline_str = " "
+
+    for i,bufnr in ipairs(M.marked_bufnr_list) do
+        if i == 1 then
+            tabline_str = ""
+        end
+
+        local bufinfo = vim.fn.getbufinfo(bufnr)[1]
+
+        local filename = extract_filename(bufinfo.name)
+
+        tabline_str = tabline_str .. "| " .. bufinfo.bufnr .. " " .. filename .. " "
+    end
+
+    vim.o.tabline = tabline_str
+end
+
+local function setup_tabline()
+    vim.api.nvim_set_option_value('showtabline', 2, {})
+    render_tabline()
+end
+
+---@param bufnr integer
+local function remove_marked_bufnr(bufnr)
+    local pos = nil
+
+    for i,_bufnr in ipairs(M.marked_bufnr_list) do
+        if _bufnr == bufnr then
+            pos = i
         end
     end
 
-    if #buf_names ~= 0 then
-        table.insert(buf_names, "")
-    end
-
-    vim.api.nvim_buf_set_lines(bufnr, 3, -1, false, {}) -- clear buffer list before rendering a new one
-    vim.api.nvim_buf_set_lines(bufnr, 3, -1, false, buf_names)
-end
-
-local function create_bowser_buffer()
-    return vim.api.nvim_create_buf(false, true)
-end
-
-local function open_bowser(bowser_bufnr, pos)
     if pos == nil then
-        pos = "above"
+        return
     end
 
-    local height = vim.api.nvim_buf_line_count(bowser_bufnr)
-
-    return vim.api.nvim_open_win(bowser_bufnr, true, {
-        height = height + 1,
-        split = pos,
-        style = "minimal"
-    })
+    table.remove(M.marked_bufnr_list, pos)
+    render_tabline()
 end
 
-local function close_bowser(bowser_bufnr)
-    local win_ids = vim.api.nvim_list_wins()
-
-    if #win_ids == 1 then
-        local new_buf = vim.api.nvim_create_buf(false, true)
-        vim.api.nvim_open_win(new_buf, false, { split = "below" })
-    end
-
-    local bufinfo = vim.fn.getbufinfo(bowser_bufnr)[1]
-    for _, win_id in ipairs(bufinfo.windows) do
-        vim.api.nvim_win_close(win_id, false)
-    end
-end
-
-local function get_index_of_line()
-    local possible_index = utils.split_string(vim.api.nvim_get_current_line(), ":")[1]
-
-    local index = utils.trim_string(possible_index)
-
-    if index == "" then
-        error("Bowser Error: Index required")
-    end
-
-    return index
-end
-
-local function open_buffer(split_pos)
-    local index = get_index_of_line()
-
-    local bufnr = get_bufnr_by_index(index)
-
-    if bufnr == nil then
-        error("Bowser Error: Buffer not found")
-    end
-
-    if last_used_win == nil then
-        last_used_win = vim.api.nvim_win_open({ bufnr, false, { split = "below" } })
-        return last_used_win
-    end
-
-    if split_pos ~= nil then
-        return vim.api.nvim_open_win(bufnr, false, { win = last_used_win, split = split_pos })
-    end
-
-    vim.api.nvim_win_set_buf(last_used_win, get_bufnr_by_index(index))
-    return last_used_win
-end
-
-local function close_buffer()
-    local index = get_index_of_line()
-    local bufnr = get_bufnr_by_index(index)
-
-    vim.api.nvim_buf_delete(bufnr, {})
-
-    set_index_bufnr_entry(index, nil)
-    return index
-end
-
-local function set_keymaps(bufnr)
-    vim.keymap.set("n", "q", function()
-        close_bowser(bufnr)
-    end, { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "<esc>", function()
-        close_bowser(bufnr)
-    end, { buffer = bufnr, noremap = true, silent = true })
-
-    vim.keymap.set("n", "j", function()
-        vim.fn.search("  \\d\\+:", "W")
-    end, { buffer = bufnr, noremap = true, silent = true })
-
-    vim.keymap.set("n", "k", function()
-        vim.fn.search("  \\d\\+:", "bW")
-    end, { buffer = bufnr, noremap = true, silent = true })
-
-    vim.keymap.set("n", "o", open_buffer, { buffer = bufnr, noremap = true, silent = true })
-    vim.keymap.set("n", "<cr>", open_buffer, { buffer = bufnr, noremap = true, silent = true })
-
-    vim.keymap.set("n", "v", function()
-        last_used_win = open_buffer("right")
-    end, { buffer = bufnr, noremap = true, silent = true })
-
-    vim.keymap.set("n", "s", function()
-        last_used_win = open_buffer("below")
-    end, { buffer = bufnr, noremap = true, silent = true })
-
+---This will create keymaps for the Bowser Buffer
+local function setup_keymaps()
+    ---#region - Close buffer where the cursor is on
     vim.keymap.set("n", "x", function()
-        close_buffer()
-        local row = unpack(vim.api.nvim_win_get_cursor(0))
-        vim.api.nvim_buf_set_lines(bufnr, row - 1, row, false, {})
-    end, { buffer = bufnr, noremap = true, silent = true })
+        local index = get_index_under_cursor()
+
+        if index == nil then
+            return;
+        end
+
+        local buffer = M.buffer_list[index]
+
+        if #buffer.windows > 0 then
+            local scratch_bufnr = vim.api.nvim_create_buf(false, true)
+
+            for _,win in ipairs(buffer.windows) do
+                vim.api.nvim_win_set_buf(win, scratch_bufnr)
+            end
+        end
+
+        vim.api.nvim_buf_delete(buffer.bufnr, {})
+
+        ---Remove line
+        local current_cursor_pos = vim.api.nvim_win_get_cursor(0)
+        local current_row = current_cursor_pos[1]
+        vim.api.nvim_buf_set_lines(M.bowser_bufnr, current_row - 1, current_row, false, { "" })
+
+        remove_marked_bufnr(buffer.bufnr)
+        M.buffer_list[index] = nil
+    end, { buffer = M.bowser_bufnr })
+    ---#endregion
+
+    ---#region - Open Buffer keymaps
+    local win_id = vim.fn.win_getid(vim.fn.winnr("#"))
+    local keys_to_open_buffer_with = { "o", "<cr>", "1", "2", "3", "4", "5", "6", "7", "8", "9" }
+    for _,key in ipairs(keys_to_open_buffer_with) do
+        vim.keymap.set("n", key, function()
+            if key == "o" or key == "cr" then
+                local index = get_index_under_cursor()
+
+                if index == nil then
+                    return
+                end
+
+                vim.api.nvim_win_set_buf(win_id, M.buffer_list[index].bufnr)
+            else
+                local index = tonumber(key)
+                local buffer = M.buffer_list[index]
+
+                if buffer == nil then
+                    print("BOWSER: Buffer with index " .. key .. "does not exist anymore.")
+                    return
+                end
+
+                vim.api.nvim_win_set_buf(win_id, M.buffer_list[index].bufnr)
+            end
+        end, { buffer = M.bowser_bufnr })
+    end
+    ---#endregion
+
+    ---#region - Toggle marker Buffer
+    vim.keymap.set("n", "m", function()
+        local index = get_index_under_cursor()
+
+        if index == nil then
+            return
+        end
+
+        local bufnr = M.buffer_list[index].bufnr
+        local is_marked = utils.array_contains(M.marked_bufnr_list, bufnr)
+        local cursor_pos = vim.api.nvim_win_get_cursor(0)
+        local first_char = " "
+
+        if is_marked then
+            remove_marked_bufnr(bufnr)
+        else
+            table.insert(M.marked_bufnr_list, M.buffer_list[index].bufnr)
+            first_char = MARKER
+        end
+
+        vim.api.nvim_buf_set_text(M.bowser_bufnr, cursor_pos[1] - 1, 4, cursor_pos[1] - 1, 5, { first_char })
+
+        render_tabline()
+    end, { buffer = M.bowser_bufnr })
+    ---#endregion
 end
 
 M.setup = function()
     vim.keymap.set("n", "<leader>b", function()
-        local bowser_bufnr = create_bowser_buffer()
+        M.bowser_bufnr = vim.api.nvim_create_buf(false, true)
 
-        render_win_header(bowser_bufnr)
-        render_buffer_list(bowser_bufnr)
+        M.buffer_list = get_open_buffers()
 
-        last_used_win = vim.api.nvim_get_current_win()
+        setup_keymaps()
 
-        local bowser_win = open_bowser(bowser_bufnr)
-        vim.api.nvim_set_option_value("cursorline", true, { win = bowser_win })
+        if #M.buffer_list == 1 and M.buffer_list[1].name == "" then
+            print("BOWSER: No buffers open")
+            return
+        end
 
-        local last_used_win_bufnr = vim.api.nvim_win_get_buf(last_used_win)
-        jump_to_bufnr(last_used_win_bufnr)
-
+        render_buffer_list()
+        create_window()
         set_syntax_highlighting()
-
-        set_keymaps(bowser_bufnr)
     end)
+
+    setup_tabline()
 end
 
 return M

@@ -6,9 +6,9 @@ nnoremap ö <c-v>
 nnoremap <leader>ö :
 
 " Use search register to mark word under cursor
-nnoremap <silent> <leader>j :let @/="<c-r><c-w>" \| set hlsearch<cr>
+nnoremap <silent> <leader>d :let @/="\\V\\<<c-r><c-w>\\>" \| set hlsearch<cr>
 " Use search register to mark selected part
-vnoremap <silent> <leader>j "zy:let @/="<c-r>z" \| set hlsearch<cr>
+vnoremap <silent> <leader>d "zy:let @/="\\V\\<<c-r>z\\>" \| set hlsearch<cr>
 
 " Make using the clipboard a little bit easier/faster
 nnoremap + "+
@@ -24,8 +24,8 @@ nnoremap <silent> <esc> :nohl<cr><esc>
 "vnoremap P P`[v`]
 
 " change behavior of o - stay in normal mode
-nnoremap o o<esc>
-nnoremap O O<esc>
+" nnoremap o o<esc>
+" nnoremap O O<esc>
 
 " surround selected text
 vnoremap ' c''<esc>"-Pl
@@ -35,6 +35,9 @@ vnoremap [ c[]<esc>"-Pl
 
 " insert mapping for surrounding characters like {}
 inoremap <c-o> {}
+inoremap <c-j><c-j> ()
+inoremap <c-j><c-k> {}
+inoremap <c-j><c-i> []
 
 " quickfix list
 nnoremap <silent> gl :cclose<cr>
@@ -47,8 +50,8 @@ nnoremap <silent> <leader>w <c-w>
 
 " save buffer/s
 nnoremap <silent> <c-s> :w<cr>
-nnoremap <leader>s :w<cr>
-nnoremap <leader>as :wa<cr>
+nnoremap <silent> <leader>s :w<cr>
+nnoremap <silent> <leader>as :wa<cr>
 
 " insert mode mappings for ctrl+arrow keys
 inoremap <c-l> <right>

@@ -10,11 +10,9 @@ vim.cmd [[
 -- Initilize own plugins
 -- require("own-plugins.git-blame").setup()
 require("own-plugins.meowser").setup()
--- require("own-plugins.bowser").setup()
--- require("own-plugins.buf-bowser").setup()
-require("own-plugins.taskmanager").setup()
+require("own-plugins.bowser").setup()
 
--- INSTALL LAZY.NVIM IF NOT INSTALLED [BEGIN]
+-- #region - INSTALL LAZY.NVIM IF NOT INSTALLED
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
@@ -29,31 +27,19 @@ if not vim.loop.fs_stat(lazypath) then
 end
 
 vim.opt.rtp:prepend(lazypath)
--- INSTALL LAZY.NVIM IF NOT INSTALLED [END]
+-- #endregion - INSTALL LAZY.NVIM IF NOT INSTALLED
 
--- LAZY.NVIM [BEGIN]
+-- #region - LAZY.NVIM
 require("lazy").setup({
     {
-        "catppuccin/nvim",
-        name = "catppuccin",
+        "rebelot/kanagawa.nvim",
+        name = "kanagawa",
         priority = 1000,
         config = function()
             vim.cmd [[
-                colorscheme catppuccin
-
-                highlight! @text.uri gui=NONE
-
-                highlight Winbar gui=bold guibg=#9ece6a guifg=#000000
-                highlight WinbarNC guibg=#181825 guifg=#ffffff
-                highlight TablineFill guibg=#181825 guifg=#ffffff
-                highlight TablineSel gui=bold guibg=#9ece6a guifg=#000000
-
-                highlight! link StatusLine Winbar
-                highlight! link StatusLineNC WinbarNC
-
-                highlight FloatTitle guifg=#89b4fa
+                colorscheme kanagawa
             ]]
-        end,
+        end
     },
     {
         lazy = false,
@@ -101,36 +87,126 @@ require("lazy").setup({
             vim.keymap.set("n", "<leader>e", ":NvimTreeFindFileToggle<cr>", { silent = true })
         end
     },
+    { "neovim/nvim-lspconfig" },
     {
-        "neoclide/coc.nvim",
+        "williamboman/mason.nvim",
+        priority = 900,
         config = function()
-            -- Some servers have issues with backup files, see #649
-            vim.opt.backup = false
-            vim.opt.writebackup = false
-
-            function _G.show_docs()
-                local cw = vim.fn.expand('<cword>')
-                if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
-                    vim.api.nvim_command('h ' .. cw)
-                elseif vim.api.nvim_eval('coc#rpc#ready()') then
-                    vim.fn.CocActionAsync('doHover')
-                else
-                    vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
-                end
-            end
-
-            vim.keymap.set("n", "gh", '<CMD>lua _G.show_docs()<CR>', { silent = true })
-
-            vim.keymap.set("n", "ge", "", { silent = true, expr = true, noremap = true })
-            vim.keymap.set("n", "gr", "<Plug>(coc-rename)", { silent = true, noremap = true })
-            vim.keymap.set("n", "gR", "<plug>(coc-references)", { silent = true, noremap = true })
-            vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, noremap = true })
-            vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", { silent = true, noremap = true })
-
-            vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]],
-                { silent = true, noremap = true, expr = true, replace_keycodes = false })
+            require("mason").setup()
         end
     },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        priority = 800,
+        dependencies = { "neovim/nvim-lspconfig", "williamboman/mason.nvim" },
+        config = function()
+            require("mason-lspconfig").setup({
+                ensure_installed = {
+                    "lua_ls",
+                    "bashls",
+                    "cssls",
+                    "css_variables",
+                    "cssmodules_ls",
+                    "tailwindcss",
+                    "dockerls",
+                    "emmet_ls",
+                    "glint",
+                    "html",
+                    "eslint",
+                    "jsonls",
+                    "marksman",
+                    "sqlls",
+                    "svelte",
+                    "vuels",
+                    "ts_ls",
+                    "vimls",
+                    "volar",
+                }
+            })
+
+            local augroup = vim.api.nvim_create_augroup("lsp_augroup", {})
+            vim.api.nvim_create_autocmd("LspAttach", {
+                group = augroup,
+                callback = function()
+                    ---Sets up keymap. Just to apply defaults.
+                    ---@param mode string
+                    ---@param lhs string
+                    ---@param rhs string
+                    local function bind(mode, lhs, rhs)
+                        vim.keymap.set(mode, lhs, rhs, { buffer = 0 })
+                    end
+
+                    bind("n", "gh", "<cmd>lua vim.lsp.buf.hover()<cr>")
+                    bind("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>")
+                    bind("n", "gD", "<cmd>lua vim.diagnostic.setqflist()<cr>")
+                    bind("n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<cr>")
+                    bind("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>")
+                    bind("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<cr>")
+                    bind("n", "gr", "<cmd>lua vim.lsp.buf.rename()<cr>")
+                    bind("n", "gR", "<cmd>lua vim.lsp.buf.references()<cr>")
+                    bind("i", "<c-s>", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
+                end
+            })
+
+            require("mason-lspconfig").setup_handlers {
+                -- The first entry (without a key) will be the default handler
+                -- and will be called for each installed server that doesn't have
+                -- a dedicated handler.
+                function (server_name) -- default handler (optional)
+                    require("lspconfig")[server_name].setup {}
+                end,
+                -- Next, you can provide a dedicated handler for specific servers.
+                ["lua_ls"] = function ()
+                    require("lspconfig")["lua_ls"].setup {
+                        settings = {
+                            Lua = {
+                                --[[ diagnostics = {
+                                    globals = { "vim" }
+                                }, ]]
+                                runtime = {
+                                    version = "LuaJIT",
+                                },
+                                workspace = {
+                                    checkThirdParty = false,
+                                    library = { vim.env.VIMRUNTIME }
+                                },
+                            }
+                        }
+                    }
+                end
+            }
+        end
+    },
+    -- {
+    --     "neoclide/coc.nvim",
+    --     config = function()
+    --         -- Some servers have issues with backup files, see #649
+    --         vim.opt.backup = false
+    --         vim.opt.writebackup = false
+    --
+    --         function _G.show_docs()
+    --             local cw = vim.fn.expand('<cword>')
+    --             if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
+    --                 vim.api.nvim_command('h ' .. cw)
+    --             elseif vim.api.nvim_eval('coc#rpc#ready()') then
+    --                 vim.fn.CocActionAsync('doHover')
+    --             else
+    --                 vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+    --             end
+    --         end
+    --
+    --         vim.keymap.set("n", "gh", '<CMD>lua _G.show_docs()<CR>', { silent = true })
+    --
+    --         vim.keymap.set("n", "ge", "", { silent = true, expr = true, noremap = true })
+    --         vim.keymap.set("n", "gr", "<Plug>(coc-rename)", { silent = true, noremap = true })
+    --         vim.keymap.set("n", "gR", "<plug>(coc-references)", { silent = true, noremap = true })
+    --         vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, noremap = true })
+    --         vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", { silent = true, noremap = true })
+    --
+    --         vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]],
+    --             { silent = true, noremap = true, expr = true, replace_keycodes = false })
+    --     end
+    -- },
     {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.6",
@@ -174,7 +250,7 @@ require("lazy").setup({
             require("Comment").setup()
         end
     },
-    { "mg979/vim-visual-multi" },
+    -- { "mg979/vim-visual-multi" },
     {
         "folke/flash.nvim",
         event = "VeryLazy",
@@ -207,4 +283,4 @@ require("lazy").setup({
         },
     },
 })
--- LAZY.NVIM [END]
+-- #endregion - LAZY.NVIM
