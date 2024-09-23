@@ -96,7 +96,6 @@ end
 
 ---Trims whitespace infront and end of a string
 ---@param str string
----@return string
 M.trim_string = function(str)
     return str:gsub("^%s*(.-)%s*$", "%1")
 end

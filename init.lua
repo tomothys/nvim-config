@@ -29,8 +29,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 -- #endregion - INSTALL LAZY.NVIM IF NOT INSTALLED
 
--- #region - LAZY.NVIM
 require("lazy").setup({
+    -- #region - Colorscheme
     {
         "rebelot/kanagawa.nvim",
         name = "kanagawa",
@@ -41,6 +41,7 @@ require("lazy").setup({
             ]]
         end
     },
+    -- #endregion - Colorscheme
     {
         lazy = false,
         priority = 999,
@@ -51,6 +52,7 @@ require("lazy").setup({
             ]]
         end
     },
+    -- #region - Treesitter
     {
         "nvim-treesitter/nvim-treesitter",
         config = function()
@@ -64,6 +66,8 @@ require("lazy").setup({
             })
         end
     },
+    -- #endregion - Treesitter
+    -- #region - Filetree
     {
         "nvim-tree/nvim-tree.lua",
         dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -87,7 +91,14 @@ require("lazy").setup({
             vim.keymap.set("n", "<leader>e", ":NvimTreeFindFileToggle<cr>", { silent = true })
         end
     },
-    { "neovim/nvim-lspconfig" },
+    -- #endregion - Filetree
+    -- #region - Neovim LSP
+    --[[ {
+        "neovim/nvim-lspconfig",
+        config = function()
+            require("lspconfig").setup()
+        end
+    },
     {
         "williamboman/mason.nvim",
         priority = 900,
@@ -160,9 +171,6 @@ require("lazy").setup({
                     require("lspconfig")["lua_ls"].setup {
                         settings = {
                             Lua = {
-                                --[[ diagnostics = {
-                                    globals = { "vim" }
-                                }, ]]
                                 runtime = {
                                     version = "LuaJIT",
                                 },
@@ -176,52 +184,69 @@ require("lazy").setup({
                 end
             }
         end
+    }, ]]
+    -- #endregion - Neovim LSP
+    -- #region - CoC LSP
+    {
+        "neoclide/coc.nvim",
+        config = function()
+            -- Some servers have issues with backup files, see #649
+            vim.opt.backup = false
+            vim.opt.writebackup = false
+
+            ---Sets up keymap. Just to apply defaults.
+            ---@param mode string
+            ---@param lhs string
+            ---@param rhs string
+            local function bind(mode, lhs, rhs)
+                vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true })
+            end
+
+            function _G.show_docs()
+                local cw = vim.fn.expand('<cword>')
+                if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
+                    vim.api.nvim_command('h ' .. cw)
+                elseif vim.api.nvim_eval('coc#rpc#ready()') then
+                    vim.fn.CocActionAsync('doHover')
+                else
+                    vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+                end
+            end
+
+            bind("n", "K", '<CMD>lua _G.show_docs()<CR>')
+            bind("n", "gh", '<CMD>lua _G.show_docs()<CR>')
+            bind("n", "ge", "<cmd>lua vim.diagnostic.setloclist()<cr>")
+            bind("n", "gr", "<Plug>(coc-rename)")
+            bind("n", "gR", "<plug>(coc-references)")
+            bind("n", "gd", "<Plug>(coc-definition)")
+            bind("n", "gD", "<cmd>lua vim.diagnostic.setqflist()<cr>")
+            bind("n", "ga", "<Plug>(coc-codeaction-cursor)")
+
+            vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]],
+                { silent = true, noremap = true, expr = true, replace_keycodes = false })
+            vim.keymap.set("i", "<c-space>", "coc#refresh()", { silent = true, expr = true })
+        end
     },
-    -- {
-    --     "neoclide/coc.nvim",
-    --     config = function()
-    --         -- Some servers have issues with backup files, see #649
-    --         vim.opt.backup = false
-    --         vim.opt.writebackup = false
-    --
-    --         function _G.show_docs()
-    --             local cw = vim.fn.expand('<cword>')
-    --             if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
-    --                 vim.api.nvim_command('h ' .. cw)
-    --             elseif vim.api.nvim_eval('coc#rpc#ready()') then
-    --                 vim.fn.CocActionAsync('doHover')
-    --             else
-    --                 vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
-    --             end
-    --         end
-    --
-    --         vim.keymap.set("n", "gh", '<CMD>lua _G.show_docs()<CR>', { silent = true })
-    --
-    --         vim.keymap.set("n", "ge", "", { silent = true, expr = true, noremap = true })
-    --         vim.keymap.set("n", "gr", "<Plug>(coc-rename)", { silent = true, noremap = true })
-    --         vim.keymap.set("n", "gR", "<plug>(coc-references)", { silent = true, noremap = true })
-    --         vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, noremap = true })
-    --         vim.keymap.set("n", "ga", "<Plug>(coc-codeaction-cursor)", { silent = true, noremap = true })
-    --
-    --         vim.keymap.set("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<cr>"]],
-    --             { silent = true, noremap = true, expr = true, replace_keycodes = false })
-    --     end
-    -- },
+    -- #endregion - CoC LSP
+    -- #region - Telescope
     {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.6",
         dependencies = { { "nvim-lua/plenary.nvim" } },
         config = function()
             local builtin = require("telescope.builtin")
-            vim.keymap.set("n", "<c-s-p>", builtin.commands, {})
             vim.keymap.set("n", "<c-p>", builtin.find_files, {})
             vim.keymap.set("n", "<leader>p", builtin.find_files, {})
+            vim.keymap.set("n", "<leader>P", builtin.builtin, {})
             vim.keymap.set("n", "<c-h>", builtin.help_tags, {})
-            vim.keymap.set("n", "<c-s-f>", builtin.live_grep, {})
             vim.keymap.set("n", "<c-f>", builtin.current_buffer_fuzzy_find, {})
-            vim.keymap.set("n", "<c-b>", builtin.buffers, {})
+            vim.keymap.set("n", "<leader>f", builtin.current_buffer_fuzzy_find, {})
+            vim.keymap.set("n", "<leader>F", builtin.live_grep, {})
+            -- vim.keymap.set("n", "<c-b>", builtin.buffers, {})
         end
     },
+    -- #endregion - Telescope
+    -- #region - Git Integration
     {
         "tpope/vim-fugitive",
         config = function()
@@ -244,17 +269,17 @@ require("lazy").setup({
             }
         end
     },
+    -- #endregion - Git Integration
     {
         "numToStr/Comment.nvim",
         config = function()
             require("Comment").setup()
         end
     },
-    -- { "mg979/vim-visual-multi" },
+    { "mg979/vim-visual-multi" },
     {
         "folke/flash.nvim",
         event = "VeryLazy",
-        ---@type Flash.Config
         opts = {
             modes = {
                 char = {
@@ -283,4 +308,3 @@ require("lazy").setup({
         },
     },
 })
--- #endregion - LAZY.NVIM
