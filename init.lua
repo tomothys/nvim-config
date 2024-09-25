@@ -4,13 +4,13 @@ vim.cmd [[
     source $HOME/.config/nvim/commands.vim
     source $HOME/.config/nvim/keymaps.vim
     source $HOME/.config/nvim/statusbar.vim
-    source $HOME/.config/nvim/windowbar.vim
 ]]
 
 -- Initilize own plugins
 -- require("own-plugins.git-blame").setup()
 require("own-plugins.meowser").setup()
 require("own-plugins.bowser").setup()
+require("own-plugins.windowbar").setup()
 
 -- #region - INSTALL LAZY.NVIM IF NOT INSTALLED
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

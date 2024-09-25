@@ -3,7 +3,10 @@ local utils = require("utils")
 local M = {
     bowser_bufnr = -1,
     buffer_list = {},
-    marked_bufnr_list = {},
+    open_markers = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+        "u", "v", "w", "x", "y", "z" },
+    marked_buf_list = {},
+    marked_buf_count = 0,
 }
 
 local MARKER = "_"
@@ -57,6 +60,18 @@ local function get_open_buffers()
     return vim.fn.getbufinfo({ buflisted = 1 })
 end
 
+---@param bufnr integer
+---@return string|nil
+local function get_key_by_bufnr(bufnr)
+    for key, value in pairs(M.marked_buf_list) do
+        if value.bufnr == bufnr then
+            return key
+        end
+    end
+
+    return nil
+end
+
 ---Render buflist to buffer
 local function render_buffer_list()
     local longest_filename = ""
@@ -91,27 +106,28 @@ local function render_buffer_list()
 
         local rightpad_filename_count = longest_filename:len() - filename:len()
         local filename_with_rightpad = filename .. ""
-        for _=1, rightpad_filename_count do
+        for _ = 1, rightpad_filename_count do
             filename_with_rightpad = filename_with_rightpad .. " "
         end
 
         local rightpad_fileext_count = longest_fileext:len() - fileext:len()
         local fileext_with_rightpad = fileext:upper() .. ""
-        for _=1, rightpad_fileext_count do
+        for _ = 1, rightpad_fileext_count do
             fileext_with_rightpad = fileext_with_rightpad .. " "
         end
 
 
         local line = "  " .. i .. ":"
 
-        local is_marked = utils.array_contains(M.marked_bufnr_list, buf.bufnr)
+        local is_marked = get_key_by_bufnr(buf.bufnr) ~= nil
         if is_marked then
             line = line .. MARKER
         else
             line = line .. " "
         end
 
-        line = line .. " " .. fileext_with_rightpad .. "  " .. filename_with_rightpad .. "  " .. buf.name:gsub(filename, "")
+        line = line ..
+            " " .. fileext_with_rightpad .. "  " .. filename_with_rightpad .. "  " .. buf.name:gsub(filename, "")
         vim.api.nvim_buf_set_lines(M.bowser_bufnr, -1, -1, false, { line })
 
         ::continue::
@@ -141,16 +157,22 @@ end
 local function render_tabline()
     local tabline_str = " "
 
-    for i,bufnr in ipairs(M.marked_bufnr_list) do
-        if i == 1 then
-            tabline_str = ""
+    local first_item = true
+
+    for key, buf in pairs(M.marked_buf_list) do
+        if buf == nil then
+            goto continue
         end
 
-        local bufinfo = vim.fn.getbufinfo(bufnr)[1]
+        if first_item then
+            tabline_str = ""
+            first_item = false
+        end
 
-        local filename = extract_filename(bufinfo.name)
+        local filename = extract_filename(buf.name)
+        tabline_str = tabline_str .. "%#Title# [" .. key .. "] " .. filename .. " %#TabLine# "
 
-        tabline_str = tabline_str .. "| " .. bufinfo.bufnr .. " " .. filename .. " "
+        ::continue::
     end
 
     vim.o.tabline = tabline_str
@@ -162,21 +184,42 @@ local function setup_tabline()
 end
 
 ---@param bufnr integer
-local function remove_marked_bufnr(bufnr)
-    local pos = nil
+local function remove_marked_buf(bufnr)
+    local key = get_key_by_bufnr(bufnr)
 
-    for i,_bufnr in ipairs(M.marked_bufnr_list) do
-        if _bufnr == bufnr then
-            pos = i
-        end
+    if key == nil then
+        print("BOWSER: Marker not found")
+        return;
     end
 
-    if pos == nil then
-        return
-    end
+    M.marked_buf_list[key] = nil
+    M.marked_buf_count = M.marked_buf_count - 1
 
-    table.remove(M.marked_bufnr_list, pos)
+    vim.keymap.del("n", "<leader>j" .. key)
+
+    table.insert(M.open_markers, 1, key)
+
     render_tabline()
+end
+
+---@param index integer
+local function mark_buffer(index)
+    local buffer = M.buffer_list[index]
+    local new_key = M.open_markers[1]
+    table.remove(M.open_markers, 1)
+    M.marked_buf_list[new_key] = M.buffer_list[index]
+    M.marked_buf_count = M.marked_buf_count + 1
+
+    vim.keymap.set("n", "<leader>j" .. new_key, function()
+        if M.marked_buf_count == 0 then
+            print("BOWSER: 0 buffers marked")
+            return;
+        end
+
+        local win_id = vim.api.nvim_get_current_win()
+
+        vim.api.nvim_win_set_buf(win_id, buffer.bufnr)
+    end, { silent = true })
 end
 
 ---This will create keymaps for the Bowser Buffer
@@ -194,7 +237,7 @@ local function setup_keymaps()
         if #buffer.windows > 0 then
             local scratch_bufnr = vim.api.nvim_create_buf(false, true)
 
-            for _,win in ipairs(buffer.windows) do
+            for _, win in ipairs(buffer.windows) do
                 vim.api.nvim_win_set_buf(win, scratch_bufnr)
             end
         end
@@ -206,17 +249,23 @@ local function setup_keymaps()
         local current_row = current_cursor_pos[1]
         vim.api.nvim_buf_set_lines(M.bowser_bufnr, current_row - 1, current_row, false, { "" })
 
-        remove_marked_bufnr(buffer.bufnr)
+        remove_marked_buf(buffer.bufnr)
+
         M.buffer_list[index] = nil
     end, { buffer = M.bowser_bufnr })
     ---#endregion
 
     ---#region - Open Buffer keymaps
-    local win_id = vim.fn.win_getid(vim.fn.winnr("#"))
     local keys_to_open_buffer_with = { "o", "<cr>", "1", "2", "3", "4", "5", "6", "7", "8", "9" }
-    for _,key in ipairs(keys_to_open_buffer_with) do
+    for _, key in ipairs(keys_to_open_buffer_with) do
         vim.keymap.set("n", key, function()
-            if key == "o" or key == "cr" then
+            local win_id = vim.fn.win_getid(vim.fn.winnr("#"))
+
+            if #vim.api.nvim_list_wins() > 2 then
+                win_id = vim.fn.win_getid(tonumber(vim.fn.input("Window: ")))
+            end
+
+            if key == "o" or key == "<cr>" then
                 local index = get_index_under_cursor()
 
                 if index == nil then
@@ -235,6 +284,8 @@ local function setup_keymaps()
 
                 vim.api.nvim_win_set_buf(win_id, M.buffer_list[index].bufnr)
             end
+
+            vim.api.nvim_buf_delete(M.bowser_bufnr, {})
         end, { buffer = M.bowser_bufnr })
     end
     ---#endregion
@@ -248,14 +299,15 @@ local function setup_keymaps()
         end
 
         local bufnr = M.buffer_list[index].bufnr
-        local is_marked = utils.array_contains(M.marked_bufnr_list, bufnr)
+        local key = get_key_by_bufnr(bufnr)
         local cursor_pos = vim.api.nvim_win_get_cursor(0)
         local first_char = " "
 
-        if is_marked then
-            remove_marked_bufnr(bufnr)
+        -- if key exists there must be a marked buffer
+        if key ~= nil then
+            remove_marked_buf(bufnr)
         else
-            table.insert(M.marked_bufnr_list, M.buffer_list[index].bufnr)
+            mark_buffer(index)
             first_char = MARKER
         end
 
